@@ -391,15 +391,15 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   Float_t d_vz_cc[3];
   Float_t d_xx_cc[3][3];
   Float_t t_tau;
-  d_vz_cc[0] = 0.006; // VPDE - ZDCE
-  d_vz_cc[1] = 0.004; // VPDW - ZDCW
-  d_vz_cc[2] = 0.006; // VPDX - ZDCX
+  d_vz_cc[0] = 0.002; // VPDE - ZDCE
+  d_vz_cc[1] = 0.002; // VPDW - ZDCW
+  d_vz_cc[2] = 0.003; // VPDX - ZDCX
   d_xx_cc[0][1] = 0.0015; // ZDCE - ZDCW
   d_xx_cc[0][2] = 0.002;  // VPDE - VPDW
-  d_xx_cc[1][1] = 0.005;  // ZDCE - ZDCX
-  d_xx_cc[1][2] = 0.002;  // VPDE - VPDX
-  d_xx_cc[2][1] = 0.005;  // ZDCW - ZDCX
-  d_xx_cc[2][2] = 0.002;  // VPDW - VPDX
+  d_xx_cc[1][1] = 0.004;  // ZDCE - ZDCX
+  d_xx_cc[1][2] = 0.015;  // VPDE - VPDX
+  d_xx_cc[2][1] = 0.004;  // ZDCW - ZDCX
+  d_xx_cc[2][2] = 0.003;  // VPDW - VPDX
   t_tau = 1.1;
 
   printf("\ndiagnostic cuts\n");

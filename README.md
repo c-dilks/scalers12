@@ -119,6 +119,7 @@ Analysis Procedure
 
   - accumulate then creates "counts.root," which contains useful trees, using mk_tree.C
   - mk_tree.C reads datfiles/acc.dat file
+    - BXING SHIFT CORRECTIONS ARE IMPLEMENTED HERE
     - acc tree: simply the acc.dat table converted into a tree
     - sca tree: restructured tree containing containing branches like 
       - bbc east, bbc west, bbc coincidence 

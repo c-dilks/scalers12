@@ -18,20 +18,14 @@ run_randomizer=0
 
 # manually removed bunches
 > kicked_manual
-echo 16570 29 >> kicked_manual
+echo 16570 22 >> kicked_manual
 echo 16582 61 >> kicked_manual
 echo 16587 29 >> kicked_manual
 echo 16593 9 >> kicked_manual
 echo 16597 27 >> kicked_manual
 echo 16602 56 >> kicked_manual
 echo 16618 40 >> kicked_manual
-#echo 16619 78 >> kicked_manual # fac slightly higher
-#echo 16619 79 >> kicked_manual # fac slightly higher
-#echo 16620 78 >> kicked_manual # fac slightly higher
-#echo 16620 79 >> kicked_manual # fac slightly higher
 echo 16625 23 >> kicked_manual
-#echo 16625 78 >> kicked_manual # fac slightly higher
-#echo 16625 79 >> kicked_manual # fac slightly higher
 echo 16626 12 >> kicked_manual
 echo 16626 19 >> kicked_manual
 echo 16650 58 >> kicked_manual
@@ -42,17 +36,8 @@ echo 16669 26 >> kicked_manual
 echo 16671 96 >> kicked_manual
 echo 16678 70 >> kicked_manual
 echo 16685 23 >> kicked_manual
-#echo 16685 78 >> kicked_manual # fac slightly higher
-#echo 16685 79 >> kicked_manual # fac slightly higher
 echo 16686 17 >> kicked_manual
-#echo 16686 78 >> kicked_manual # fac slightly higher
-#echo 16686 79 >> kicked_manual # fac slightly higher
 echo 16697 108 >> kicked_manual
-#echo 16697 78 >> kicked_manual # fac slightly higher
-#echo 16697 79 >> kicked_manual # fac slightly higher
-#echo 16698 78 >> kicked_manual # fac slightly higher
-#echo 16698 79 >> kicked_manual # fac slightly higher
-#echo 16699 57 >> kicked_manual # only ZDCE fac spikes
 echo 16701 21 >> kicked_manual
 echo 16701 28 >> kicked_manual
 echo 16704 90 >> kicked_manual

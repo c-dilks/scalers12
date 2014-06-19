@@ -31,9 +31,6 @@ void mk_tree(const char * acc_file="datfiles/acc.dat")
 
   acc->Print();
 
-  Int_t IMAX_tmp = acc->GetMaximum("i");
-  const Int_t IMAX = IMAX_tmp;
-
   // set branch addresses to read through acc tree
   Int_t index,runnum,fill_index,fill,bx;
   Double_t bbc[8];
@@ -55,28 +52,7 @@ void mk_tree(const char * acc_file="datfiles/acc.dat")
   acc->SetBranchAddress("tot_bx",&tot_bx);
   acc->SetBranchAddress("blue",&blue);
   acc->SetBranchAddress("yell",&yell);
-
-
-  // build arrays for restructuring; arrays are needed so that
-  // we can implement bXing shift corrections
-  Double_t bbce_arr[IMAX][120];
-  Double_t bbcw_arr[IMAX][120];
-  Double_t bbcx_arr[IMAX][120];
-  Double_t zdce_arr[IMAX][120];
-  Double_t zdcw_arr[IMAX][120];
-  Double_t zdcx_arr[IMAX][120];
-  Double_t vpde_arr[IMAX][120];
-  Double_t vpdw_arr[IMAX][120];
-  Double_t vpdx_arr[IMAX][120];
-  Int_t runnum_arr[IMAX];
-  Int_t fi_arr[IMAX];
-  Int_t fill_arr[IMAX];
-  Double_t time_arr[IMAX];
-  Double_t tot_bx_arr[IMAX][120];
-  Int_t blue_arr[IMAX][120];
-  Int_t yell_arr[IMAX][120];
-  Bool_t kicked_arr[IMAX][120];
-
+  
 
   // restructure tree into one suitable for analysis
   TTree * sca = new TTree("sca","restructured tree");
@@ -161,90 +137,8 @@ void mk_tree(const char * acc_file="datfiles/acc.dat")
     
     kicked=!okEntry; // cleaned up analysis
     //kicked=0; // take all bXings
-    
 
-    // store data into arrays, implementing bXing shift corrections on scalers
-    if(fill==16570)
-    {
-      bbce_arr[index-1][(bx+113)%120] = bbce; // shift down 7 bXings
-      bbcw_arr[index-1][(bx+113)%120] = bbcw;
-      bbcx_arr[index-1][(bx+113)%120] = bbcx;
-      zdce_arr[index-1][(bx+113)%120] = zdce; // shift down 7 bXings
-      zdcw_arr[index-1][(bx+113)%120] = zdcw;
-      zdcx_arr[index-1][(bx+113)%120] = zdcx;
-      vpde_arr[index-1][(bx+113)%120] = vpde; // shift down 7 bXings
-      vpdw_arr[index-1][(bx+113)%120] = vpdw;
-      vpdx_arr[index-1][(bx+113)%120] = vpdx;
-    }
-    else if(fill == 16582 ||
-            fill == 16586 ||
-            fill == 16587 || 
-            fill == 16592 || 
-            fill == 16593 || 
-            fill == 16594 || 
-            fill == 16597 || 
-            fill == 16602)
-    {
-      bbce_arr[index-1][bx] = bbce; // no shift
-      bbcw_arr[index-1][bx] = bbcw;
-      bbcx_arr[index-1][bx] = bbcx;
-      zdce_arr[index-1][bx] = zdce; // no shift
-      zdcw_arr[index-1][bx] = zdcw;
-      zdcx_arr[index-1][bx] = zdcx;
-      vpde_arr[index-1][(bx+1)%120] = vpde; // shift up 1 bXings
-      vpdw_arr[index-1][(bx+1)%120] = vpdw;
-      vpdx_arr[index-1][(bx+1)%120] = vpdx;
-    }
-    else
-    {
-      bbce_arr[index-1][bx] = bbce;
-      bbcw_arr[index-1][bx] = bbcw;
-      bbcx_arr[index-1][bx] = bbcx;
-      zdce_arr[index-1][bx] = zdce;
-      zdcw_arr[index-1][bx] = zdcw;
-      zdcx_arr[index-1][bx] = zdcx;
-      vpde_arr[index-1][bx] = vpde;
-      vpdw_arr[index-1][bx] = vpdw;
-      vpdx_arr[index-1][bx] = vpdx;
-    };
-
-    runnum_arr[index-1] = runnum;
-    fi_arr[index-1] = fill_index;
-    fill_arr[index-1] = fill;
-    time_arr[index-1] = time;
-    tot_bx_arr[index-1][bx] = tot_bx;
-    blue_arr[index-1][bx] = blue;
-    yell_arr[index-1][bx] = yell;
-    kicked_arr[index-1][bx] = kicked;
-  };
-
-
-  // fill restructured tree
-  for(Int_t i=0; i<IMAX; i++)
-  {
-    index = i+1;
-    runnum = runnum_arr[i];
-    fill_index = fi_arr[i];
-    fill = fill_arr[i];
-    time = time_arr[i];
-    for(Int_t b=0; b<120; b++)
-    {
-      bx = b;
-      bbce = bbce_arr[i][b];
-      bbcw = bbcw_arr[i][b];
-      bbcx = bbcx_arr[i][b];
-      zdce = zdce_arr[i][b];
-      zdcw = zdcw_arr[i][b];
-      zdcx = zdcx_arr[i][b];
-      vpde = vpde_arr[i][b];
-      vpdw = vpdw_arr[i][b];
-      vpdx = vpdx_arr[i][b];
-      tot_bx = tot_bx_arr[i][b];
-      blue = blue_arr[i][b];
-      yell = yell_arr[i][b];
-      kicked = kicked_arr[i][b];
-      sca->Fill();
-    };
+    sca->Fill(); // new kick method
   };
 
   TFile * outfile = new TFile("counts.root","RECREATE");
