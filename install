@@ -14,3 +14,6 @@ ln -sv /GreyDisk1/sca2013 sca2013
 
 touch spinpat; rm spinpat
 ln -sv ../fmstxt/spinpat spinpat
+
+touch pol.root; rm pol.root
+ln -sv ../polar12/pol.root pol.root

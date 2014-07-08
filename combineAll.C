@@ -26,6 +26,8 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   Float_t RRx[3][10]; 
   Float_t RR[3][10]; // mean R
   Float_t RR_err[3][10]; // error of mean R
+  Float_t R_LL[3]; // systematic uncertainty
+  Float_t scarat[3][4]; // zdc/vpd
   Int_t i_sums,runnum_sums,fill_sums,fi_sums; // (fi not in rdat tree)
   Double_t t_sums,tau;
   Int_t num_runs;
@@ -196,6 +198,12 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rdat->SetBranchAddress("d_wx_zdc",&(d_xx[2][1]));
   rdat->SetBranchAddress("d_wx_vpd",&(d_xx[2][2]));
 
+  rdat->SetBranchAddress("R_LL_e",&(R_LL[0]));
+  rdat->SetBranchAddress("R_LL_w",&(R_LL[1]));
+  rdat->SetBranchAddress("R_LL_x",&(R_LL[2]));
+
+  rdat->SetBranchAddress("scarat",scarat);
+
   sums->SetBranchAddress("i",&i_sums);
   sums->SetBranchAddress("runnum",&runnum_sums);
   sums->SetBranchAddress("fi",&fi_sums);
@@ -214,6 +222,7 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   sums->SetBranchAddress("vpdx",&vpdx);
   sums->SetBranchAddress("tot_bx",&tot_bx);
   sums->SetBranchAddress("pattern",&pattern);
+
 
   
   TFile * outfile = new TFile("rtree.root","RECREATE");
@@ -384,6 +393,10 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rellum->Branch("d_wx_vpd",&(d_xx[2][2]),"d_wx_vpd/F");
   rellum->Branch("isConsistent",&isConsistent,"isConsistent/O"); // true if diagnostics passed
   rellum->Branch("pattern",&pattern,"pattern/I"); // spin pattern no. (see sumTree.C)
+  rellum->Branch("R_LL_e",&(R_LL[0]),"R_LL_e/F"); // R_LL (see rellum4.C for definition)
+  rellum->Branch("R_LL_w",&(R_LL[1]),"R_LL_w/F");
+  rellum->Branch("R_LL_x",&(R_LL[2]),"R_LL_x/F");
+  rellum->Branch("scarat",scarat,"scarat[3][4]/F"); // zdc / vpd
 
 
   // diagnostic consistency bounds (see if statement in tree for loop below)

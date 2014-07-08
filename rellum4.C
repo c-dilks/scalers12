@@ -33,6 +33,10 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
              Bool_t drawLog=0, Int_t zoomIn=0, 
              Int_t specificFill=0, Int_t specificRun=0)
 {
+  // read polarization file
+  TFile * polfile = new TFile("pol.root","READ");
+  TTree * pol_tr = (TTree*) polfile->Get("pol");
+
   // read counts.root file
   TFile * infile = new TFile("counts.root","READ");
   TTree * tr = (TTree*) infile->Get("sca");
@@ -195,6 +199,33 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
         index_tmp = index;
       };
     };
+  };
+
+
+  // fill polarization data array (only if var=="i")
+  // -- used in systematic error computation
+  Float_t polar_b_array[var_bins_const];
+  Float_t polar_y_array[var_bins_const];
+  Int_t pol_fill;
+  Float_t b_pol,y_pol;
+  pol_tr->SetBranchAddress("fill",&pol_fill);
+  pol_tr->SetBranchAddress("b_pol",&b_pol);
+  pol_tr->SetBranchAddress("y_pol",&y_pol);
+  if(!strcmp(var,"i"))
+  {
+    for(Int_t i=0; i<pol_tr->GetEntries(); i++)
+    {
+      pol_tr->GetEntry(i);
+      for(Int_t j=0; j<var_bins_const; j++)
+      {
+        if(fill_array[j] == pol_fill)
+        {
+          polar_b_array[j] = b_pol;
+          polar_y_array[j] = y_pol;
+        };
+      };
+    };
+    //for(j=0; j<var_bins_const; j++) printf("%d %d %f %f\n",runnum_array[j],fill_array[j],polar_b_array[j],polar_y_array[j]);
   };
 
 
@@ -542,9 +573,9 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   // R7 = N++ / N+-
   // R8 = N-+ / N+-
   // R9 = N++ / N-+
-  char R_n[3][3][10][128]; // [tbit] [cbit] [rellum]
+  TH1D * R_d[3][3][10]; // [tbit] [cbit] [rellum] // relative luminosity
+  char R_n[3][3][10][128];
   char R_t[3][3][10][128];
-  TH1D * R_d[3][3][10]; // [tbit] [cbit] [rellum]
   Double_t mmm[4]; // [sbit]
   Double_t rrr[10]; // [rellum]
   for(Int_t t=0; t<3; t++)
@@ -590,6 +621,51 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
           {
             R_d[t][c][r]->SetBinContent(b,rrr[r]);
             R_d[t][c][r]->SetBinError(b,err_d[t][c][r]->GetBinContent(b));
+          };
+        };
+      };
+    };
+  };
+
+
+  // compute systematic uncertainty using double-spin asymmetry of ratio of zdc yield to vpd yield
+  // -- only if var="i"
+  // -- R_LL := (r++ - r+-) / (r++ + r+-) where r = zdc_mul / vpd_mul
+  TH1D * R_LL_d[3]; // [cbit] // systematic uncertainty
+  char R_LL_n[3][128];
+  char R_LL_t[3][128];
+  TH1D * scarat_d[3][4]; // [cbit] [sbit] // zdc_mul / vpd_mul
+  char scarat_n[3][4][128];
+  Double_t mmm_rat[4]; // [sbit]
+  Double_t rrr_rat; 
+  if(!strcmp(var,"i"))
+  {
+    for(Int_t c=0; c<3; c++)
+    {
+      sprintf(R_LL_n[c],"R_LL_%s",cbit[c]);
+      sprintf(R_LL_t[c],"R_{LL}(%s)",cbit[c]);
+      R_LL_d[c] = new TH1D(R_LL_n[c],R_LL_t[c],var_bins,var_l,var_h);
+      for(Int_t s=0; s<4; s++) 
+      {
+        sprintf(scarat_n[c][s],"scarat_d_c%d_s%d",c,s);
+        scarat_d[c][s] = new TH1D(scarat_n[c][s],scarat_n[c][s],var_bins,var_l,var_h);
+      };
+      for(Int_t b=1; b<=var_bins; b++)
+      {
+        for(Int_t s=0; s<4; s++)
+        {
+          mmm_rat[s] = (mul_d[1][c][s]->GetBinContent(b))/(mul_d[2][c][s]->GetBinContent(b)); // zdc / vpd
+          scarat_d[c][s]->SetBinContent(b,mmm_rat[s]);
+          tt[s] = tot_d[s]->GetBinContent(b);
+        };
+        if(tt[0]*tt[1]*tt[2]*tt[3]>0)
+        {
+          rrr_rat = ( (mmm_rat[0]+mmm_rat[3]) - (mmm_rat[1]+mmm_rat[2]) ) / ( (mmm_rat[0]+mmm_rat[3]) + (mmm_rat[1]+mmm_rat[2]) );
+          if(polar_b_array[b-1]*polar_y_array[b-1]>0)
+          {
+            rrr_rat *= 1/(polar_b_array[b-1]*polar_y_array[b-1]); // polarization factor
+            R_LL_d[c]->SetBinContent(b,rrr_rat);
+            //R_LL_d[c]->SetBinError(b,1/(0.55*0.55)*1/sqrt
           };
         };
       };
@@ -752,6 +828,15 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
       };
     };
   };
+
+  if(!strcmp(var,"i"))
+  {
+    for(Int_t c=0; c<3; c++)
+    {
+      R_LL_d[c]->Fit("pol0","Q","",var_l,var_h);
+    };
+  };
+
   
   // compute rate dependence
   // !!!! computation runs iff var=="i"
@@ -850,7 +935,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     };
   };
 
-  Int_t sf; // drawing s]cale factor
+  Int_t sf; // drawing scale factor
   if(printPNGs) sf=3;
   else sf=1;
 
@@ -1082,6 +1167,18 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     };
   };
 
+  TCanvas * c_R_LL = new TCanvas("c_R_LL","c_R_LL",1100*sf,700*sf);
+  c_R_LL->Divide(1,3);
+  if(!strcmp(var,"i"))
+  {
+    for(Int_t c=0; c<3; c++)
+    {
+      c_R_LL->GetPad(c+1)->SetGrid(1,1);
+      c_R_LL->cd(c+1);
+      R_LL_d[c]->Draw();
+    };
+  };
+
   TCanvas * c_D[10]; // [rellum]
   char c_D_n[10][32]; // [rellum] [char buffer]
   for(Int_t r=1; r<10; r++)
@@ -1200,6 +1297,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
         c_R[t][r]->Write();
       };
     };
+    if(!strcmp(var,"i")) c_R_LL->Write();
     for(Int_t r=1; r<10; r++) c_mean[r]->Write();
     for(Int_t r=1; r<10; r++) c_D[r]->Write();
     for(Int_t r=1; r<10; r++) 
@@ -1251,6 +1349,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     };
   };
 
+
   
   // produce output tree (iff var=="i")
   TTree * rtr = new TTree("rtr","rtr");
@@ -1259,8 +1358,10 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   Float_t RRe[3][10]; // [tbit] [rellum]
   Float_t RRw[3][10]; // [tbit] [rellum]
   Float_t RRx[3][10]; // [tbit] [rellum]
+  Float_t scarat[3][4]; // zdc/vpd [cbit] [sbit]
   Float_t d_vz[3]; // [cbit] --- diagnostic (only for R3!)
   Float_t d_xx[3][3]; // [xbit] [tbit]
+  Float_t R_LL[3]; // [cbit]
   if(!strcmp(var,"i") && specificFill==0 && specificRun==0)
   {
     rtr->Branch("i",&index,"i/I");
@@ -1268,6 +1369,9 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("fill",&fill,"fill/I");
     rtr->Branch("t",&time,"t/D");
 
+    // n.b. it's probably better to write arrays to branches, but that's not
+    //      how the original downstream code was designed to interpret this tree
+    //      -- this can be cleaned up someday; see scarat for sample syntax
     rtr->Branch("R1_bbce",&(RRe[0][1]),"R1_bbce/F"); // bbce relative luminosity
     rtr->Branch("R2_bbce",&(RRe[0][2]),"R2_bbce/F");
     rtr->Branch("R3_bbce",&(RRe[0][3]),"R3_bbce/F");
@@ -1429,6 +1533,12 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("d_wx_zdc",&(d_xx[2][1]),"d_wx_zdc/F"); // ZDCW - ZDCX
     rtr->Branch("d_wx_vpd",&(d_xx[2][2]),"d_wx_vpd/F"); // VPDW - VPDX
 
+    rtr->Branch("R_LL_e",&(R_LL[0])); // R_LL = 1/(Pb*Py) * (r++ - r+-)/(r++ + r+-)
+    rtr->Branch("R_LL_w",&(R_LL[1])); // where r = mul_zdc / mul_vpd
+    rtr->Branch("R_LL_x",&(R_LL[2])); 
+
+    rtr->Branch("scarat",scarat,"scarat[3][4]/F"); // zdc / vpd [cbit] [sbit]
+
     
     for(Int_t b=1; b<=var_bins; b++)
     {
@@ -1451,12 +1561,22 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
       for(Int_t c=0; c<3; c++)
       {
         d_vz[c] = D_d[c][3]->GetBinContent(b);
+        R_LL[c] = R_LL_d[c]->GetBinContent(b);
       };
       for(Int_t t=0; t<3; t++)
       {
         for(Int_t x=0; x<3; x++)
         {
           d_xx[x][t] = SD_d[x][t][3]->GetBinContent(b);
+        };
+      };
+
+      // scalar ratios
+      for(Int_t c=0; c<3; c++)
+      {
+        for(Int_t s=0; s<4; s++)
+        {
+          scarat[c][s] = scarat_d[c][s]->GetBinContent(b);
         };
       };
       rtr->Fill();
