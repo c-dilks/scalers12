@@ -59,41 +59,41 @@ void sumTree(const char * filename="counts.root")
   // (overall pattern no.) = 10 * (blue pattern no.) + (yell pattern no.)
   Int_t pattern[4][8]; // [pattern no.] [bXing]
 
-  pattern[0][0] =  1; // pattern 1 + + - - + + - -
-  pattern[0][1] =  1;
-  pattern[0][2] = -1;
+  pattern[0][0] =  1; // pattern 1 + - + - - + - + 
+  pattern[0][1] = -1;
+  pattern[0][2] =  1;
   pattern[0][3] = -1;
-  pattern[0][4] =  1;
+  pattern[0][4] = -1;
   pattern[0][5] =  1;
   pattern[0][6] = -1;
-  pattern[0][7] = -1;
+  pattern[0][7] =  1;
 
-  pattern[1][0] = -1; // pattern 2 - - + + - - + +
-  pattern[1][1] = -1;
-  pattern[1][2] =  1;
+  pattern[1][0] = -1; // pattern 2 - + - + + - + - 
+  pattern[1][1] =  1;
+  pattern[1][2] = -1;
   pattern[1][3] =  1;
-  pattern[1][4] = -1;
+  pattern[1][4] =  1;
   pattern[1][5] = -1;
   pattern[1][6] =  1;
-  pattern[1][7] =  1;
+  pattern[1][7] = -1;
 
-  pattern[2][0] =  1; // pattern 3 + + - - - - + +
+  pattern[2][0] =  1; // pattern 3 + + - - + + - - 
   pattern[2][1] =  1;
   pattern[2][2] = -1;
   pattern[2][3] = -1;
-  pattern[2][4] = -1;
-  pattern[2][5] = -1;
-  pattern[2][6] =  1;
-  pattern[2][7] =  1;
+  pattern[2][4] =  1;
+  pattern[2][5] =  1;
+  pattern[2][6] = -1;
+  pattern[2][7] = -1;
 
-  pattern[3][0] = -1; // pattern 4 - - + + + + - -
+  pattern[3][0] = -1; // pattern 4 - - + + - - + + 
   pattern[3][1] = -1;
   pattern[3][2] =  1;
   pattern[3][3] =  1;
-  pattern[3][4] =  1;
-  pattern[3][5] =  1;
-  pattern[3][6] = -1;
-  pattern[3][7] = -1;
+  pattern[3][4] = -1;
+  pattern[3][5] = -1;
+  pattern[3][6] =  1;
+  pattern[3][7] =  1;
 
 
 
