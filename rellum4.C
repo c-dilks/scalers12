@@ -466,26 +466,51 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   {
     for(Int_t c=0; c<3; c++)
     {
-      raw_d[t][c][0]->SetLineColor(kGreen+2);
-      raw_d[t][c][1]->SetLineColor(kOrange+7);
-      raw_d[t][c][2]->SetLineColor(kRed);
-      raw_d[t][c][3]->SetLineColor(kBlue);
-      raw_d[t][c][4]->SetLineColor(kBlack);
-      acc_d[t][c][0]->SetLineColor(kGreen+2);
-      acc_d[t][c][1]->SetLineColor(kOrange+7);
-      acc_d[t][c][2]->SetLineColor(kRed);
-      acc_d[t][c][3]->SetLineColor(kBlue);
-      acc_d[t][c][4]->SetLineColor(kBlack);
-      mul_d[t][c][0]->SetLineColor(kGreen+2);
-      mul_d[t][c][1]->SetLineColor(kOrange+7);
-      mul_d[t][c][2]->SetLineColor(kRed);
-      mul_d[t][c][3]->SetLineColor(kBlue);
-      mul_d[t][c][4]->SetLineColor(kBlack);
-      fac_d[t][c][0]->SetLineColor(kGreen+2);
-      fac_d[t][c][1]->SetLineColor(kOrange+7);
-      fac_d[t][c][2]->SetLineColor(kRed);
-      fac_d[t][c][3]->SetLineColor(kBlue);
-      fac_d[t][c][4]->SetLineColor(kBlack);
+      if(!strcmp(var,"bx"))
+      {
+        for(Int_t s=0; s<4; s++)
+        {
+          raw_d[t][c][s]->SetFillColor(kBlue);
+          acc_d[t][c][s]->SetFillColor(kBlue);
+          mul_d[t][c][s]->SetFillColor(kBlue);
+          fac_d[t][c][s]->SetFillColor(kBlue);
+          raw_d[t][c][s]->SetLineColor(kBlue);
+          acc_d[t][c][s]->SetLineColor(kBlue);
+          mul_d[t][c][s]->SetLineColor(kBlue);
+          fac_d[t][c][s]->SetLineColor(kBlue);
+        };
+        raw_d[t][c][4]->SetFillColor(kBlack);
+        acc_d[t][c][4]->SetFillColor(kBlack);
+        mul_d[t][c][4]->SetFillColor(kBlack);
+        fac_d[t][c][4]->SetFillColor(kBlack);
+        raw_d[t][c][4]->SetLineColor(kBlack);
+        acc_d[t][c][4]->SetLineColor(kBlack);
+        mul_d[t][c][4]->SetLineColor(kBlack);
+        fac_d[t][c][4]->SetLineColor(kBlack);
+      }
+      else
+      {
+        raw_d[t][c][0]->SetLineColor(kGreen+2);
+        raw_d[t][c][1]->SetLineColor(kOrange+7);
+        raw_d[t][c][2]->SetLineColor(kRed);
+        raw_d[t][c][3]->SetLineColor(kBlue);
+        raw_d[t][c][4]->SetLineColor(kBlack);
+        acc_d[t][c][0]->SetLineColor(kGreen+2);
+        acc_d[t][c][1]->SetLineColor(kOrange+7);
+        acc_d[t][c][2]->SetLineColor(kRed);
+        acc_d[t][c][3]->SetLineColor(kBlue);
+        acc_d[t][c][4]->SetLineColor(kBlack);
+        mul_d[t][c][0]->SetLineColor(kGreen+2);
+        mul_d[t][c][1]->SetLineColor(kOrange+7);
+        mul_d[t][c][2]->SetLineColor(kRed);
+        mul_d[t][c][3]->SetLineColor(kBlue);
+        mul_d[t][c][4]->SetLineColor(kBlack);
+        fac_d[t][c][0]->SetLineColor(kGreen+2);
+        fac_d[t][c][1]->SetLineColor(kOrange+7);
+        fac_d[t][c][2]->SetLineColor(kRed);
+        fac_d[t][c][3]->SetLineColor(kBlue);
+        fac_d[t][c][4]->SetLineColor(kBlack);
+      };
       for(Int_t s=0; s<5; s++)
       {
         raw_d[t][c][s]->GetXaxis()->SetLabelSize(0.08);

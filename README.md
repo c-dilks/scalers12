@@ -1,4 +1,4 @@
-RELATIVE LUMINOSITY ANALYSIS
+RELATIVE LUMINOSITY ANALYSIS -- Run 12 pp510 (L)
 ----------------------------
 
 Installation
@@ -130,8 +130,6 @@ Analysis Procedure
         certain bunches which are empty according to scalers but filled according to
         cdev are labelled as 'kicked' in the output tree; bXings which are kicked
         are not projected to any distributions in the rellum4 output
-  - can run "print_run_table.dat" to print a table containing the columns
-    [run index] [run number] [fill index] [fill number]
         
 
 5. Compute the relative luminosity
@@ -177,6 +175,7 @@ Analysis Procedure
       run time; the slope of a linear fit to this should equal unity
   - run combineAll.C, which combines sums.root and rdat_i.root into a final tree, which
     can then be passed to asymmetry analysis code
+  - run "make_run_list.C" to make list of run numbers & run indices
 
 
 Spinbit Equalizing Running 
