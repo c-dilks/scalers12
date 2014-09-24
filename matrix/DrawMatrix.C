@@ -6,6 +6,7 @@
 void DrawMatrix(const char * var="mul", Int_t tbit0=1, Int_t cbit0=2, Bool_t printPNG=0)
 {
   TFile * infile = new TFile("rootfiles/all.root","READ");
+  TFile * outfile = new TFile("matrix.root","RECREATE");
   TTree * matx = (TTree*) infile->Get("matx");
 
   // strings
@@ -79,8 +80,7 @@ void DrawMatrix(const char * var="mul", Int_t tbit0=1, Int_t cbit0=2, Bool_t pri
 
 
   // write output
-  TFile * outfile = new TFile("matrix.root","RECREATE");
-  matx->Write("tr");
+  //matx->Write("tr");
   mat->Write("mat");
   printf("matrix.root written\n");
 
