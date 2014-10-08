@@ -13,10 +13,10 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
   Int_t pat[NPAT] = {0,13,14,23,24,31,32,41,42};
   char pat_str[NPAT][256];
   char beampat[5][20];
-  strcpy(beampat[1],"+ + - - + + - -");
-  strcpy(beampat[2],"- - + + - - + +");
-  strcpy(beampat[3],"+ + - - - - + +");
-  strcpy(beampat[4],"- - + + + + - -");
+  strcpy(beampat[1],"+ - + - - + - +");
+  strcpy(beampat[2],"- + - + + - + -");
+  strcpy(beampat[3],"+ + - - + + - -");
+  strcpy(beampat[4],"- - + + - - + +");
   // old way
   /*
   sprintf(pat_str[1],"B[%s]  Y[%s]  (%d)",beampat[1],beampat[3],pat[1]); 
@@ -28,15 +28,15 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
   sprintf(pat_str[7],"B[%s]  Y[%s]  (%d)",beampat[4],beampat[1],pat[7]); 
   sprintf(pat_str[8],"B[%s]  Y[%s]  (%d)",beampat[4],beampat[2],pat[8]); 
   */
-  // new way (just has more details
-  sprintf(pat_str[1],"B_{%d}[%s]  Y_{%d}[%s]  (S S S S O O O O)",pat[1]/10,beampat[1],pat[1]%10,beampat[3]); 
-  sprintf(pat_str[2],"B_{%d}[%s]  Y_{%d}[%s]  (O O O O S S S S)",pat[2]/10,beampat[1],pat[2]%10,beampat[4]); 
-  sprintf(pat_str[3],"B_{%d}[%s]  Y_{%d}[%s]  (O O O O S S S S)",pat[3]/10,beampat[2],pat[3]%10,beampat[3]); 
-  sprintf(pat_str[4],"B_{%d}[%s]  Y_{%d}[%s]  (S S S S O O O O)",pat[4]/10,beampat[2],pat[4]%10,beampat[4]); 
-  sprintf(pat_str[5],"B_{%d}[%s]  Y_{%d}[%s]  (S S S S O O O O)",pat[5]/10,beampat[3],pat[5]%10,beampat[1]); 
-  sprintf(pat_str[6],"B_{%d}[%s]  Y_{%d}[%s]  (O O O O S S S S)",pat[6]/10,beampat[3],pat[6]%10,beampat[2]); 
-  sprintf(pat_str[7],"B_{%d}[%s]  Y_{%d}[%s]  (O O O O S S S S)",pat[7]/10,beampat[4],pat[7]%10,beampat[1]); 
-  sprintf(pat_str[8],"B_{%d}[%s]  Y_{%d}[%s]  (S S S S O O O O)",pat[8]/10,beampat[4],pat[8]%10,beampat[2]); 
+  // new way (just has more details)
+  sprintf(pat_str[1],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[1]/10,beampat[1],pat[1]%10,beampat[3]); 
+  sprintf(pat_str[2],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[2]/10,beampat[1],pat[2]%10,beampat[4]); 
+  sprintf(pat_str[3],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[3]/10,beampat[2],pat[3]%10,beampat[3]); 
+  sprintf(pat_str[4],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[4]/10,beampat[2],pat[4]%10,beampat[4]); 
+  sprintf(pat_str[5],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[5]/10,beampat[3],pat[5]%10,beampat[1]); 
+  sprintf(pat_str[6],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[6]/10,beampat[3],pat[6]%10,beampat[2]); 
+  sprintf(pat_str[7],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[7]/10,beampat[4],pat[7]%10,beampat[1]); 
+  sprintf(pat_str[8],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[8]/10,beampat[4],pat[8]%10,beampat[2]); 
 
   const Int_t NASY=10;
 
@@ -58,12 +58,14 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
   TH1D * sigma_hr_dist[NPAT][NASY];
   TH1D * cons_dist[NPAT][NASY];
   TH1D * epsi_dist[NPAT][NASY];
+  TH1D * asym_dist[NPAT][4];
   char sigma_id_dist_n[NPAT][NASY][64];
   char sigma_r_dist_n[NPAT][NASY][64];
   char sigma_h_dist_n[NPAT][NASY][64];
   char sigma_hr_dist_n[NPAT][NASY][64];
   char cons_dist_n[NPAT][NASY][64];
   char epsi_dist_n[NPAT][NASY][64];
+  char asym_dist_n[NPAT][4][64];
   for(Int_t pp=0; pp<NPAT; pp++)
   {
     for(Int_t aa=1; aa<NASY; aa++)
@@ -74,12 +76,15 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
       sprintf(sigma_hr_dist_n[pp][aa],"/sigma_hr/sigma_hr_a%d",aa);
       sprintf(cons_dist_n[pp][aa],"/constant/cons_a%d_v_run",aa);
       sprintf(epsi_dist_n[pp][aa],"/epsilon/epsi_a%d_v_run",aa);
+      if(aa<4) sprintf(asym_dist_n[pp][aa],"/asymmetry/asym_a%d_v_run",aa);
       sigma_id_dist[pp][aa] = (TH1D*) infile[pp]->Get(sigma_id_dist_n[pp][aa]);
       sigma_r_dist[pp][aa] = (TH1D*) infile[pp]->Get(sigma_r_dist_n[pp][aa]);
       sigma_h_dist[pp][aa] = (TH1D*) infile[pp]->Get(sigma_h_dist_n[pp][aa]);
       sigma_hr_dist[pp][aa] = (TH1D*) infile[pp]->Get(sigma_hr_dist_n[pp][aa]);
       cons_dist[pp][aa] = (TH1D*) infile[pp]->Get(cons_dist_n[pp][aa]);
       epsi_dist[pp][aa] = (TH1D*) infile[pp]->Get(epsi_dist_n[pp][aa]);
+      if(aa<4) asym_dist[pp][aa] = (TH1D*) infile[pp]->Get(asym_dist_n[pp][aa]);
+      if(aa<4) printf("asym_dist[%d][%d] @ %p\n",pp,aa,(void*)asym_dist[pp][aa]);
 
       sigma_id_dist[pp][aa]->GetXaxis()->SetLabelSize(0.08);
       sigma_r_dist[pp][aa]->GetXaxis()->SetLabelSize(0.08);
@@ -87,6 +92,7 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
       sigma_hr_dist[pp][aa]->GetXaxis()->SetLabelSize(0.08);
       cons_dist[pp][aa]->GetXaxis()->SetLabelSize(0.08);
       epsi_dist[pp][aa]->GetXaxis()->SetLabelSize(0.08);
+      if(aa<4) asym_dist[pp][aa]->GetXaxis()->SetLabelSize(0.08);
 
       sigma_id_dist[pp][aa]->GetYaxis()->SetLabelSize(0.08);
       sigma_r_dist[pp][aa]->GetYaxis()->SetLabelSize(0.08);
@@ -94,6 +100,7 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
       sigma_hr_dist[pp][aa]->GetYaxis()->SetLabelSize(0.08);
       cons_dist[pp][aa]->GetYaxis()->SetLabelSize(0.08);
       epsi_dist[pp][aa]->GetYaxis()->SetLabelSize(0.08);
+      if(aa<4) asym_dist[pp][aa]->GetYaxis()->SetLabelSize(0.08);
 
       printf("sigma_id_dist[%d][%d] @ %p\n",pp,aa,(void*)sigma_id_dist[pp][aa]);
       printf("sigma_r_dist[%d][%d] @ %p\n",pp,aa,(void*)sigma_r_dist[pp][aa]);
@@ -118,12 +125,14 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
       sigma_hr_dist[pp][aa]->SetLineColor(colours[pp]);
       cons_dist[pp][aa]->SetLineColor(colours[pp]);
       epsi_dist[pp][aa]->SetLineColor(colours[pp]);
+      if(aa<4) asym_dist[pp][aa]->SetLineColor(colours[pp]);
       sigma_id_dist[pp][aa]->SetLineWidth(2);
       sigma_r_dist[pp][aa]->SetLineWidth(2);
       sigma_h_dist[pp][aa]->SetLineWidth(2);
       sigma_hr_dist[pp][aa]->SetLineWidth(2);
       cons_dist[pp][aa]->SetLineWidth(2);
       epsi_dist[pp][aa]->SetLineWidth(2);
+      if(aa<4) asym_dist[pp][aa]->SetLineWidth(2);
     };
   };
 
@@ -136,12 +145,14 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
   TCanvas * sigma_hr_canv[3];
   TCanvas * cons_canv[3];
   TCanvas * epsi_canv[3];
+  TCanvas * asym_canv;
   char sigma_id_canv_n[3][32];
   char sigma_r_canv_n[3][32];
   char sigma_h_canv_n[3][32];
   char sigma_hr_canv_n[3][32];
   char cons_canv_n[3][32];
   char epsi_canv_n[3][32];
+  char asym_canv_n[32];
   char asy_str[3][8];
   strcpy(asy_str[0],"1-3");
   strcpy(asy_str[1],"4-6");
@@ -228,6 +239,23 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
       };
     };
   };
+  // asymmetry canvas
+  sprintf(asym_canv_n,"asym_canv_a1-3");
+  asym_canv = new TCanvas(asym_canv_n,asym_canv_n,1100*sf,700*sf);
+  asym_canv->Divide(1,3);
+  for(Int_t dd=1; dd<=3; dd++) 
+  {
+    asym_canv->GetPad(dd)->SetGrid(1,1);
+    asym_canv->cd(dd);
+    for(Int_t pp=0; pp<NPAT; pp++)
+    {
+      if(pp==0) strcpy(drawtype,"E");
+      else strcpy(drawtype,"ESAME");
+      asym_dist[pp][dd]->Draw(drawtype);
+    };
+  };
+      
+
 
   
   // make legend canvas
@@ -251,6 +279,7 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
   for(Int_t cc=0; cc<3; cc++) sigma_hr_canv[cc]->Write(sigma_hr_canv_n[cc]);
   for(Int_t cc=0; cc<3; cc++) cons_canv[cc]->Write(cons_canv_n[cc]);
   for(Int_t cc=0; cc<3; cc++) epsi_canv[cc]->Write(epsi_canv_n[cc]);
+  asym_canv->Write(asym_canv_n);
   leg_canv->Write("legend");
   printf("%s written\n",outfile_n);
 };

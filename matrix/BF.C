@@ -25,6 +25,8 @@ void BF(const char * var="mul",
   TTree * counts = (TTree*) countsfile->Get("sca");
   TFile * sumsfile = new TFile("../sums.root","READ");
   TTree * sums_tr = (TTree*) sumsfile->Get("sum");
+  TFile * polfile = new TFile("../pol.root","READ");
+  TTree * pol_tr = (TTree*) polfile->Get("pol");
   //printf("executing DrawMatrix.C to check ordering of matx tree\n");
   //gROOT->ProcessLine(".x DrawMatrix.C");
 
@@ -54,9 +56,12 @@ void BF(const char * var="mul",
 
   // set matx branch addresses
   Int_t i,fi,tbit,cbit,bx;
+  Int_t runnum,fill;
   Double_t t,val;
   matx->SetBranchAddress("i",&i);
   matx->SetBranchAddress("fi",&fi);
+  matx->SetBranchAddress("runnum",&runnum);
+  matx->SetBranchAddress("fill",&fill);
   matx->SetBranchAddress("t",&t);
   matx->SetBranchAddress("tbit",&tbit);
   matx->SetBranchAddress("cbit",&cbit);
@@ -71,13 +76,27 @@ void BF(const char * var="mul",
     return;
   };
 
+  
+  // set pol tree branch addresses
+  Int_t fill_p;
+  Float_t b_pol,y_pol,b_pol_e,y_pol_e;
+  pol_tr->SetBranchAddress("fill",&fill_p);
+  pol_tr->SetBranchAddress("b_pol",&b_pol);
+  pol_tr->SetBranchAddress("y_pol",&y_pol);
+  pol_tr->SetBranchAddress("b_pol_e",&b_pol_e);
+  pol_tr->SetBranchAddress("y_pol_e",&y_pol_e);
 
-  // check to see if matx tree is sorted by run index from hadd
+
+  // check to see if matx tree is sorted by run index from hadd and 
+  // build run number & fill number arrays
   // -- if it's not, you'll need to write a sorting routine
   printf("checking matx...\n");
+  Int_t imax_tmp = matx->GetMaximum("i");
+  const Int_t IMAX = imax_tmp; // max number of runs
+  const Int_t NB = 120; // max number of bunches
+  Int_t runnum_arr[IMAX];
+  Int_t fill_arr[IMAX];
   Int_t index_tmp=0;
-  matx->SetBranchAddress("i",&i);
-  matx->SetBranchAddress("fi",&fi);
   for(Int_t ii=0; ii<matx->GetEntries(); ii++)
   {
     matx->GetEntry(ii);
@@ -89,15 +108,14 @@ void BF(const char * var="mul",
         fprintf(stderr,"ERROR: hadded matx tree not correctly sorted\n");
         return;
       };
+      runnum_arr[i-1] = runnum;
+      fill_arr[i-1] = fill;
     };
   };
 
 
   // define ratio array "rat" and corresponding uncertainties "unc"
   // -- from documentation:  r^i = rat;  sigma_{r^i} = unc
-  Int_t imax_tmp = matx->GetMaximum("i");
-  const Int_t IMAX = imax_tmp; // max number of runs
-  const Int_t NB = 120; // max number of bunches
   Double_t rat[IMAX][NB]; // rat = num / den
   Double_t den[IMAX][NB]; // denominator
   Double_t num[IMAX][NB]; // numerator
@@ -422,7 +440,64 @@ void BF(const char * var="mul",
       };
     };
   };
-      
+
+
+  // asymmetry vs. run index for a==1,2,3
+  // -- asymmetry = epsilon / polarization
+  TH1D * asym_dist[4]; // [asym]
+  char asym_dist_n[4][16];
+  char asym_dist_t[4][64];
+  sprintf(asym_dist_t[1],"%s%s A_{L}^{Y} w.r.t. %s%s vs. run index",
+    tbit_s[numer_tbit],cbit_s[numer_cbit],tbit_s[denom_tbit],cbit_s[denom_cbit]);
+  sprintf(asym_dist_t[2],"%s%s A_{L}^{B} w.r.t. %s%s vs. run index",
+    tbit_s[numer_tbit],cbit_s[numer_cbit],tbit_s[denom_tbit],cbit_s[denom_cbit]);
+  sprintf(asym_dist_t[3],"%s%s A_{LL} w.r.t. %s%s vs. run index",
+    tbit_s[numer_tbit],cbit_s[numer_cbit],tbit_s[denom_tbit],cbit_s[denom_cbit]);
+  Float_t b_pol_use,y_pol_use,b_pol_e_use,y_pol_e_use;
+  Double_t bc,be,asymmetry,asymmetry_e;
+  for(Int_t aa=1; aa<4; aa++)
+  {
+    sprintf(asym_dist_n[aa],"asym_a%d_v_run",aa);
+    asym_dist[aa] = new TH1D(asym_dist_n[aa],asym_dist_t[aa],IMAX,1,IMAX+1);
+    for(Int_t bb=1; bb<=epsi_dist[aa]->GetNbinsX(); bb++)
+    {
+      bc = epsi_dist[aa]->GetBinContent(bb);
+      be = epsi_dist[aa]->GetBinError(bb);
+      for(Int_t xx=0; xx<pol_tr->GetEntries(); xx++)
+      {
+        pol_tr->GetEntry(xx);
+        if(fill_p == fill_arr[bb-1])
+        {
+          b_pol_use = b_pol;
+          y_pol_use = y_pol;
+          b_pol_e_use = b_pol_e;
+          y_pol_e_use = y_pol_e;
+        };
+      };
+      if(be>0)
+      {
+        if(aa==1)
+        {
+          asymmetry = bc / y_pol_use;
+          asymmetry_e = asymmetry * sqrt( pow(be/bc,2) + pow(y_pol_e_use/y_pol_use,2) );
+        }
+        else if(aa==2) 
+        {
+          asymmetry = bc / b_pol_use;
+          asymmetry_e = asymmetry * sqrt( pow(be/bc,2) + pow(b_pol_e_use/b_pol_use,2) );
+        }
+        else if(aa==3) 
+        {
+          asymmetry = bc / (y_pol_use*b_pol_use);
+          asymmetry_e = asymmetry * sqrt( pow(be/bc,2) + pow(b_pol_e_use/b_pol_use,2) + pow(y_pol_e_use/y_pol_use,2) ); 
+        };
+        asym_dist[aa]->SetBinContent(bb,asymmetry);
+        asym_dist[aa]->SetBinError(bb,asymmetry_e);
+
+        //if(aa==1) printf("%d %d %f %f\n",bb,fill_arr[bb-1],b_pol_use,y_pol_use);
+      };
+    };
+  };
 
 
 
@@ -440,6 +515,7 @@ void BF(const char * var="mul",
     {
       cons_dist[aa]->Fit("pol0","Q","",1,IMAX+1);
       epsi_dist[aa]->Fit("pol0","Q","",1,IMAX+1);
+      if(aa<4) asym_dist[aa]->Fit("pol0","Q","",1,IMAX+1);
       //optimal_cons[aa] = cons_dist[aa]->GetFunction("pol0")->GetParameter(0);
       //optimal_epsi[aa] = epsi_dist[aa]->GetFunction("pol0")->GetParameter(0);
       error_cons[aa] = cons_dist[aa]->GetFunction("pol0")->GetParError(0);
@@ -660,6 +736,7 @@ void BF(const char * var="mul",
   outfile->mkdir("sigma_hr");
   outfile->mkdir("constant");
   outfile->mkdir("epsilon");
+  outfile->mkdir("asymmetry");
   for(Int_t aa=1; aa<10; aa++) 
   {
     outfile->cd("/Hsum"); Hsum_dist[aa]->Write();
@@ -669,6 +746,11 @@ void BF(const char * var="mul",
     outfile->cd("/sigma_hr"); sigma_hr_dist[aa]->Write();
     outfile->cd("/constant"); cons_dist[aa]->Write();
     outfile->cd("/epsilon"); epsi_dist[aa]->Write();
+    if(aa<4)
+    {
+      outfile->cd("/asymmetry");
+      asym_dist[aa]->Write();
+    };
   };
   if(evaluateChiSquare)
   {

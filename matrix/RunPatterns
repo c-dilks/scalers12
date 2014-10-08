@@ -10,6 +10,7 @@ for i in {0,13,14,23,24,31,32,41,42}; do
   if [ $cnt -le $ncores ]; then
     root.exe -b -q 'BF.C('\"mul\"',1,0,2,2,false,'$i')' >& log/zdce.vpdx.${i}.log &&\
     root.exe -b -q 'BF.C('\"mul\"',1,1,2,2,false,'$i')' >& log/zdcw.vpdx.${i}.log &&\
+    root.exe -b -q 'BF.C('\"mul\"',1,2,2,2,false,'$i')' >& log/zdcx.vpdx.${i}.log &&\
     root.exe -b -q 'BF.C('\"mul\"',2,0,2,2,false,'$i')' >& log/vpde.vpdx.${i}.log &&\
     root.exe -b -q 'BF.C('\"mul\"',2,1,2,2,false,'$i')' >& log/vpdw.vpdx.${i}.log &&\
     root.exe -b -q 'BF.C('\"mul\"',1,0,2,0,false,'$i')' >& log/zdce.vpde.${i}.log &&\
@@ -25,6 +26,7 @@ wait
 
 root.exe -b -q 'ColourPatternPlots.C('\"zdce\"','\"vpdx\"')'
 root.exe -b -q 'ColourPatternPlots.C('\"zdcw\"','\"vpdx\"')'
+root.exe -b -q 'ColourPatternPlots.C('\"zdcx\"','\"vpdx\"')'
 root.exe -b -q 'ColourPatternPlots.C('\"vpde\"','\"vpdx\"')'
 root.exe -b -q 'ColourPatternPlots.C('\"vpdw\"','\"vpdx\"')'
 
