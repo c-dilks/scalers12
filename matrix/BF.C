@@ -70,6 +70,7 @@ void BF(const char * var="mul",
   else if(!strcmp(var,"acc")) matx->SetBranchAddress("acc",&val);
   else if(!strcmp(var,"mul")) matx->SetBranchAddress("mul",&val);
   else if(!strcmp(var,"fac")) matx->SetBranchAddress("fac",&val);
+  else if(!strcmp(var,"rsc")) matx->SetBranchAddress("rsc",&val);
   else 
   {
     fprintf(stderr,"ERROR: val not valid\n");

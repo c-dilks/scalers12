@@ -1,6 +1,9 @@
 #!/bin/bash
 # runs BF.C for multiple cases, selecting spin patterns
 
+#var="mul"
+var="rsc"
+
 ncores=$(grep -c processor /proc/cpuinfo)
 echo ncores=$ncores
 cnt=1
@@ -8,13 +11,13 @@ cnt=1
 for i in {0,13,14,23,24,31,32,41,42}; do
   echo "i=${i}"
   if [ $cnt -le $ncores ]; then
-    root.exe -b -q 'BF.C('\"mul\"',1,0,2,2,false,'$i')' >& log/zdce.vpdx.${i}.log &&\
-    root.exe -b -q 'BF.C('\"mul\"',1,1,2,2,false,'$i')' >& log/zdcw.vpdx.${i}.log &&\
-    root.exe -b -q 'BF.C('\"mul\"',1,2,2,2,false,'$i')' >& log/zdcx.vpdx.${i}.log &&\
-    root.exe -b -q 'BF.C('\"mul\"',2,0,2,2,false,'$i')' >& log/vpde.vpdx.${i}.log &&\
-    root.exe -b -q 'BF.C('\"mul\"',2,1,2,2,false,'$i')' >& log/vpdw.vpdx.${i}.log &&\
-    root.exe -b -q 'BF.C('\"mul\"',1,0,2,0,false,'$i')' >& log/zdce.vpde.${i}.log &&\
-    root.exe -b -q 'BF.C('\"mul\"',1,1,2,1,false,'$i')' >& log/zdcw.vpdw.${i}.log &
+    root.exe -b -q 'BF.C('\"$var\"',1,0,2,2,false,'$i')' >& log/zdce.vpdx.${i}.log &&\
+    root.exe -b -q 'BF.C('\"$var\"',1,1,2,2,false,'$i')' >& log/zdcw.vpdx.${i}.log &&\
+    root.exe -b -q 'BF.C('\"$var\"',1,2,2,2,false,'$i')' >& log/zdcx.vpdx.${i}.log &&\
+    root.exe -b -q 'BF.C('\"$var\"',2,0,2,2,false,'$i')' >& log/vpde.vpdx.${i}.log &&\
+    root.exe -b -q 'BF.C('\"$var\"',2,1,2,2,false,'$i')' >& log/vpdw.vpdx.${i}.log &&\
+    root.exe -b -q 'BF.C('\"$var\"',1,0,2,0,false,'$i')' >& log/zdce.vpde.${i}.log &&\
+    root.exe -b -q 'BF.C('\"$var\"',1,1,2,1,false,'$i')' >& log/zdcw.vpdw.${i}.log &
     let cnt++
   else 
     wait
