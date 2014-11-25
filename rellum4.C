@@ -460,15 +460,81 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   };
 
 
-  // compute rellum statistical error bars 
+
+  // statistical uncertainties for acc+mul corrected counts -- ( just sqrt(counts) statistics)
+  Double_t BC;
+  Double_t unc;
+  TH1D * mul_unc_d[3][3][4]; // [tbit] [cbit] [spinbit] -- mul count uncertainty
+  char mul_unc_t[3][3][4][256];
+  char mul_unc_n[3][3][4][32];
+  for(Int_t t=0; t<3; t++)
+  {
+    for(Int_t c=0; c<3; c++)
+    {
+      for(Int_t s=0; s<4; s++)
+      {
+        sprintf(mul_unc_t[t][c][s],"%s%s mul uncertainty (spin %s) vs. %s",tbit[t],cbit[c],nbit[s],var);
+        sprintf(mul_unc_n[t][c][s],"mul_unc_%s%s_s%d",tbit[t],cbit[c],s);
+        mul_unc_d[t][c][s] = new TH1D(mul_unc_n[t][c][s],mul_unc_t[t][c][s],var_bins,var_l,var_h);
+
+        for(Int_t b=1; b<=var_bins; b++)
+        {
+          BC = mul_d[t][c][s]->GetBinContent(b);
+          unc = sqrt(BC);
+          mul_unc_d[t][c][s]->SetBinContent(b,unc);
+        };
+      };
+    };
+  };
+
+
+  // staatistical uncertaintites for rate-safe corrected counts -- FORMULA
+  Double_t RC[3]; // [cbit] // total number of raw counts
+  Double_t TC; // total number of bXings
+  Double_t zeta[3]; // [cbit] // zeta[c] := 1-RC[c]/TC
+  Double_t corr_xe,corr_xw,corr_we; // pearson correlation coefficient
+  TH1D * rsc_unc_d[3][4]; // [tbit] [spinbit] -- rate-safe count uncertainty for each spinbit
+  char rsc_unc_t[3][4][256];
+  char rsc_unc_n[3][4][32];
+  for(Int_t t=0; t<3; t++)
+  {
+    for(Int_t s=0; s<4; s++)
+    {
+      sprintf(rsc_unc_t[t][s],"%s rsc uncertainty (spin %s) vs. %s",tbit[t],nbit[s],var);
+      sprintf(rsc_unc_n[t][s],"rsc_unc_%s_s%d",tbit[t],s);
+      rsc_unc_d[t][s] = new TH1D(rsc_unc_n[t][s],rsc_unc_t[t][s],var_bins,var_l,var_h);
+
+      for(Int_t b=1; b<=var_bins; b++)
+      {
+        TC = tot_d[s]->GetBinContent(b);
+        for(Int_t c=0; c<3; c++)
+        {
+          RC[c] = raw_d[t][c][s]->GetBinContent(b);
+          zeta[c] = 1-RC[c]/TC;
+        };
+
+        // pearson correlation coefficients --- IS THIS ASSUMPTION VALID !?!?!?!?!?!?! (see CheckCorrelations.C --> corr.root ....)
+        corr_xe = 1; 
+        corr_xw = 1;
+        corr_we = 1; 
+
+        unc = RC[0]/zeta[0] + RC[1]/zeta[1] + RC[2]/zeta[2]
+              - 2 * corr_xe * sqrt( RC[2]*RC[0] / (zeta[2]*zeta[0]) )
+              - 2 * corr_xw * sqrt( RC[2]*RC[1] / (zeta[2]*zeta[1]) )
+              + 2 * corr_we * sqrt( RC[1]*RC[0] / (zeta[1]*zeta[0]) );
+        if(unc<0) printf("==================== WARNING: RSC Im(unc)!=0\n");
+        unc = sqrt(unc);
+        rsc_unc_d[t][s]->SetBinContent(b,unc);
+      };
+    };
+  };
+
+
+  /*
   TH1D * Rerr_mul_d[3][3][10]; // [tbit] [cbit] [rellum] -- rellum error for that using mul counts
   char Rerr_mul_t[3][3][10][256];
   char Rerr_mul_n[3][3][10][256];
-  TH1D * Rerr_rsc_d[3][10]; // [tbit] [rellum] -- rellum error for that using rsc counts
-  char Rerr_rsc_t[3][10][256];
-  char Rerr_rsc_n[3][10][256];
-  Double_t LL[4]; // number of counts
-  Double_t unc;
+  Double_t LL[4]; // number of mul counts for each spinbit
   for(Int_t r=1; r<10; r++)
   {
     for(Int_t t=0; t<3; t++)
@@ -478,18 +544,12 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
         sprintf(Rerr_mul_t[t][c][r],"R%d error %s%s using mul vs. %s",r,tbit[t],cbit[c],var);
         sprintf(Rerr_mul_n[t][c][r],"Rerr_mul_%s%s_R%d",tbit[t],cbit[c],r);
         Rerr_mul_d[t][c][r] = new TH1D(Rerr_mul_n[t][c][r],Rerr_mul_t[t][c][r],var_bins,var_l,var_h);
-        if(c==2)
-        {
-          sprintf(Rerr_rsc_t[t][r],"R%d error %s using rsc vs. %s",r,tbit[t],var);
-          sprintf(Rerr_rsc_n[t][r],"Rerr_rsc_%s_R%d",tbit[t],r);
-          Rerr_rsc_d[t][r] = new TH1D(Rerr_rsc_n[t][r],Rerr_rsc_t[t][r],var_bins,var_l,var_h);
-        };
 
         for(Int_t b=1; b<=var_bins; b++)
         {
           for(Int_t s=0; s<4; s++) LL[s] = mul_d[t][c][s]->GetBinContent(b);
 
-          // rellum uncertainty propagation -- FORMULA; assumes error on counts is sqrt(counts) 
+          // rellum uncertainty propagation for acc+mul corrections -- FORMULA; assumes error on counts is sqrt(counts) 
           if(r==1)
             unc = ( (LL[1] + LL[3]) * (LL[0] + LL[1] + LL[2] + LL[3]) ) / pow((LL[0] + LL[2]), 3);
           else if(r==2)
@@ -507,11 +567,109 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
           //unc = sqrt(fabs(unc)); // TESTING; only needed if counts go negative from "bad" corrections
 
           Rerr_mul_d[t][c][r]->SetBinContent(b,unc);
-          if(c==2) Rerr_rsc_d[t][r]->SetBinContent(b,unc); // NEEDS TO BE UPDATED WHEN RATE-SAFE STAT UNC. IS IMPLEMENTED
         };
       };
     };
   };
+  */
+
+  // propagate counts uncertainties to rellum errors
+  TH1D * Rerr_mul_d[3][3][10]; // [tbit] [cbit] [rellum] -- rellum error for that using mul counts
+  char Rerr_mul_t[3][3][10][256];
+  char Rerr_mul_n[3][3][10][64];
+  TH1D * Rerr_rsc_d[3][10]; // [tbit] [rellum] -- rellum error for that using rsc counts
+  char Rerr_rsc_t[3][10][256];
+  char Rerr_rsc_n[3][10][64];
+  Double_t LL[4]; 
+  Double_t SS[4];
+  for(Int_t r=1; r<10; r++)
+  {
+    for(Int_t t=0; t<3; t++)
+    {
+      // loop over cbit one extra time; if c==3 then this loop does the uncertainty propagation
+      // using rate-safe corrected counts uncertainties; if c<3, then we use sqrt(mul) uncertainties
+      for(Int_t c=0; c<4; c++)
+      {
+        printf("r%d t%d c%d\n",r,t,c);
+        if(c<3)
+        {
+          sprintf(Rerr_mul_t[t][c][r],"R%d error %s%s using mul vs. %s",r,tbit[t],cbit[c],var);
+          sprintf(Rerr_mul_n[t][c][r],"Rerr_mul_%s%s_R%d",tbit[t],cbit[c],r);
+          Rerr_mul_d[t][c][r] = new TH1D(Rerr_mul_n[t][c][r],Rerr_mul_t[t][c][r],var_bins,var_l,var_h);
+        }
+        else
+        {
+          sprintf(Rerr_rsc_t[t][r],"R%d error %s using rsc vs. %s",r,tbit[t],var);
+          sprintf(Rerr_rsc_n[t][r],"Rerr_rsc_%s_R%d",tbit[t],r);
+          Rerr_rsc_d[t][r] = new TH1D(Rerr_rsc_n[t][r],Rerr_rsc_t[t][r],var_bins,var_l,var_h);
+        };
+        
+
+        for(Int_t b=1; b<=var_bins; b++)
+        {
+          for(Int_t s=0; s<4; s++)
+          {
+            if(c<3)
+            {
+              LL[s] = mul_d[t][c][s]->GetBinContent(b);
+              SS[s] = mul_unc_d[t][c][s]->GetBinContent(b);
+            }
+            else
+            {
+              LL[s] = rsc_d[t][s]->GetBinContent(b);
+              SS[s] = rsc_unc_d[t][s]->GetBinContent(b);
+            };
+            //printf("t%d c%d s%d LL=%f SS=%f\n",t,c,s,LL[s],SS[s]);
+          };
+
+          // rellum uncertainty propagation -- FORMULA; sqrt taken after if chain
+          if(r==1)
+            unc = ( ( pow(SS[1],2) + pow(SS[3],2) ) * pow(LL[0] + LL[2],2) + 
+                    ( pow(SS[0],2) + pow(SS[2],2) ) * pow(LL[1] + LL[3],2) ) / 
+                    ( pow(LL[0] + LL[2],4) );
+          else if(r==2)
+            unc = ( ( pow(SS[2],2) + pow(SS[3],2) ) * pow(LL[0] + LL[1],2) + 
+                    ( pow(SS[0],2) + pow(SS[1],2) ) * pow(LL[2] + LL[3],2) ) / 
+                    ( pow(LL[0] + LL[1],4) );
+          else if(r==3)
+            unc = ( ( pow(SS[0],2) + pow(SS[3],2) ) * pow(LL[1] + LL[2],2) + 
+                    ( pow(SS[1],2) + pow(SS[2],2) ) * pow(LL[0] + LL[3],2) ) / 
+                    ( pow(LL[1] + LL[2],4) );
+          else if(r==4) 
+            unc = ( pow(SS[3],2) * pow(LL[0],2) +
+                    pow(SS[0],2) * pow(LL[3],2) ) /
+                  ( pow(LL[0],4) );
+          else if(r==5)
+            unc = ( pow(SS[1],2) * pow(LL[0],2) +
+                    pow(SS[0],2) * pow(LL[1],2) ) /
+                  ( pow(LL[0],4) );
+          else if(r==6)
+            unc = ( pow(SS[2],2) * pow(LL[0],2) +
+                    pow(SS[0],2) * pow(LL[2],2) ) /
+                  ( pow(LL[0],4) );
+          else if(r==7)
+            unc = ( pow(SS[3],2) * pow(LL[2],2) +
+                    pow(SS[2],2) * pow(LL[3],2) ) /
+                  ( pow(LL[2],4) );
+          else if(r==8)
+            unc = ( pow(SS[2],2) * pow(LL[1],2) +
+                    pow(SS[1],2) * pow(LL[2],2) ) /
+                  ( pow(LL[2],4) );
+          else if(r==9)
+            unc = ( pow(SS[3],2) * pow(LL[1],2) +
+                    pow(SS[1],2) * pow(LL[3],2) ) /
+                  ( pow(LL[1],4) );
+
+          unc = sqrt(unc);
+          //unc = sqrt(fabs(unc)); // TESTING; only needed if counts go negative from "bad" corrections
+
+          if(c<3) Rerr_mul_d[t][c][r]->SetBinContent(b,unc);
+          else Rerr_rsc_d[t][r]->SetBinContent(b,unc);
+        };
+      };
+    };
+  };
+
 
 
   // set colours and font sizes

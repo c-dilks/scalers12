@@ -12,6 +12,7 @@ void DrawProjections(const char * numer="zdce",
                      const char * denom="vpdx",
                      Int_t Nomit=-1)
 {
+  const Float_t WIDTH = 3e-3;
   char filename[256];
   if(Nomit==-1)
     sprintf(filename,"fit_result.%s.%s.root",numer,denom);
@@ -45,7 +46,7 @@ void DrawProjections(const char * numer="zdce",
   char asym_dist_all_t[256];
   sprintf(asym_dist_all_n,"asym_dist_all");
   sprintf(asym_dist_all_t,"A_{LL} distribution for %s/%s%s",numer,denom,omit_str);
-  TH1D * asym_dist_all = new TH1D(asym_dist_all_n,asym_dist_all_t,100,-1.5e-3,1.5e-3);
+  TH1D * asym_dist_all = new TH1D(asym_dist_all_n,asym_dist_all_t,100,-1*WIDTH,WIDTH);
 
   char asym_dist_pat_n[8][256];
   char asym_dist_pat_t[8][256];
@@ -54,7 +55,7 @@ void DrawProjections(const char * numer="zdce",
   {
     sprintf(asym_dist_pat_n[pp],"asym_dist_pat%d",pp);
     sprintf(asym_dist_pat_t[pp],"A_{LL} distribution for %s/%s%s",numer,denom,omit_str);
-    asym_dist_pat[pp] = new TH1D(asym_dist_pat_n[pp],asym_dist_pat_t[pp],100,-1.5e-3,1.5e-3);
+    asym_dist_pat[pp] = new TH1D(asym_dist_pat_n[pp],asym_dist_pat_t[pp],100,-1*WIDTH,WIDTH);
     asym_dist_pat[pp]->SetLineColor(colours[pp]);
   };
 
@@ -76,10 +77,7 @@ void DrawProjections(const char * numer="zdce",
     };
   };
 
-  // run 13 fits (2 gaussians)
-  //TF1 * gaus1 = new TF1("gaus1","gaus",-3e-3,0);
-  //TF1 * gaus2 = new TF1("gaus2","gaus",0,3e-3);
-  asym_dist_all->Fit("gaus","","",-1.3e-3,1.3e-3);
+  asym_dist_all->Fit("gaus","","",-1*WIDTH,WIDTH);
   c1->Close();
 
 
