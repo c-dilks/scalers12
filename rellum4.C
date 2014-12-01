@@ -823,8 +823,8 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
             {
               rsc_bcc = rsc_d[t][4]->GetBinContent(b);
               rsr_bcc = rsr_d[t][4]->GetBinContent(b);
-              rsc_zoom[t] = (rsc_bbc > rsc_zoom[t]) ? rsc_bcc : rsc_zoom[t];
-              rsr_zoom[t] = (rsr_bbc > rsr_zoom[t]) ? rsr_bcc : rsr_zoom[t];
+              rsc_zoom[t] = (rsc_bcc > rsc_zoom[t]) ? rsc_bcc : rsc_zoom[t];
+              rsr_zoom[t] = (rsr_bcc > rsr_zoom[t]) ? rsr_bcc : rsr_zoom[t];
             };
           };
         };
@@ -1241,7 +1241,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
           {
             sprintf(rate_rsr_n[t][s],"rate_rsr_%s_s%d",tbit[t],s);
             sprintf(rate_rsr_t[t][s],
-              "%s #Omega*rsc/rawx vs. %sx corrected rate -- %s",tbit[t],tbit[t],leg);
+              "%s #Omega*rsc/rawx vs. %sx acc+mul corrected rate -- %s",tbit[t],tbit[t],leg);
             rate_rsr[t][s] = new TH2D(rate_rsr_n[t][s],rate_rsr_t[t][s],
               10,0,rate_array_max[t][2],
               100,0,10);
@@ -2082,12 +2082,18 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     char c_acc_png[3][256];
     char c_mul_png[3][256];
     char c_fac_png[3][256];
+    char c_rsc_png[256];
+    char c_rsr_png[256];
     char c_R_png[3][10][256];
     char c_dev_png[3][10][256];
     char c_mean_png[10][256];
     char c_D_png[10][256];
     char c_SD_png[3][10][256];
     char c_rate_fac_png[3][256];
+    char c_rate_rsr_png[256];
+    char c_mul_compare_raw_png[256];
+    char c_rsc_compare_raw_png[256];
+    char c_rsc_compare_mul_png[256];
     char file_type[4];
     if(specificFill>0 || specificRun>0) sprintf(file_type,"pdf"); // make pdfs instead of pngs for specific fills
     else sprintf(file_type,"png");
@@ -2113,6 +2119,10 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
         };
       };
     };
+    sprintf(c_rsc_png,"%s/rsc_%s.%s",pngdir,var,file_type);
+    sprintf(c_rsr_png,"%s/rsr_%s.%s",pngdir,var,file_type);
+    c_rsc->Print(c_rsc_png,file_type);
+    c_rsr->Print(c_rsr_png,file_type);
     if(specificFill==0 && specificRun==0)
     {
       for(Int_t r=1; r<10; r++)
@@ -2134,7 +2144,17 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     if(specificFill==0 && specificRun==0 && !strcmp(var,"i"))
     {
       for(Int_t t=0; t<3; t++)
+      {
         c_rate_fac[t]->Print(c_rate_fac_png[t],"png");
+      };
+      sprintf(c_rate_rsr_png,"%s/rate_rsr.png",pngdir);
+      sprintf(c_mul_compare_raw_png,"%s/mul_compare_raw.png",pngdir);
+      sprintf(c_rsc_compare_raw_png,"%s/rsc_compare_raw.png",pngdir);
+      sprintf(c_rsc_compare_mul_png,"%s/rsc_compare_mul.png",pngdir);
+      c_rate_rsr->Print(c_rate_rsr_png,"png");
+      c_mul_compare_raw->Print(c_mul_compare_raw_png,"png");
+      c_rsc_compare_raw->Print(c_rsc_compare_raw_png,"png");
+      c_rsc_compare_mul->Print(c_rsc_compare_mul_png,"png");
     };
   };
 
