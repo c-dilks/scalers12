@@ -1852,10 +1852,11 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   TTree * rtr = new TTree("rtr","rtr");
   Float_t RR[3][10]; // [tbit] [rellum]
   Float_t RR_err[3][10]; // [tbit] [rellum]
+  Float_t RR_rscerr[3][10]; // [tbit] [rellum]
   Float_t RRe[3][10]; // [tbit] [rellum]
   Float_t RRw[3][10]; // [tbit] [rellum]
   Float_t RRx[3][10]; // [tbit] [rellum]
-  Float_t scarat[3][4]; // zdc/vpd [cbit] [sbit]
+  Float_t RRrsc[3][10]; // [tbit] [rellum]
   Float_t d_vz[3]; // [cbit] --- diagnostic (only for R3!)
   Float_t d_xx[3][3]; // [xbit] [tbit]
   Float_t R_LL[3]; // [cbit]
@@ -1868,8 +1869,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
 
     // n.b. it's probably better to write arrays to branches, but that's not
     //      how the original downstream code was designed to interpret this tree
-    //      -- this can be cleaned up someday; see scarat for sample syntax
-    rtr->Branch("R1_bbce",&(RRe[0][1]),"R1_bbce/F"); // bbce relative luminosity
+    rtr->Branch("R1_bbce",&(RRe[0][1]),"R1_bbce/F"); // bbce relative luminosity (using mul)
     rtr->Branch("R2_bbce",&(RRe[0][2]),"R2_bbce/F");
     rtr->Branch("R3_bbce",&(RRe[0][3]),"R3_bbce/F");
     rtr->Branch("R4_bbce",&(RRe[0][4]),"R4_bbce/F");
@@ -1878,7 +1878,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_bbce",&(RRe[0][7]),"R7_bbce/F");
     rtr->Branch("R8_bbce",&(RRe[0][8]),"R8_bbce/F");
     rtr->Branch("R9_bbce",&(RRe[0][9]),"R9_bbce/F");
-    rtr->Branch("R1_zdce",&(RRe[1][1]),"R1_zdce/F"); // zdce relative luminosity
+    rtr->Branch("R1_zdce",&(RRe[1][1]),"R1_zdce/F"); // zdce relative luminosity (using mul)
     rtr->Branch("R2_zdce",&(RRe[1][2]),"R2_zdce/F");
     rtr->Branch("R3_zdce",&(RRe[1][3]),"R3_zdce/F");
     rtr->Branch("R4_zdce",&(RRe[1][4]),"R4_zdce/F");
@@ -1887,7 +1887,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_zdce",&(RRe[1][7]),"R7_zdce/F");
     rtr->Branch("R8_zdce",&(RRe[1][8]),"R8_zdce/F");
     rtr->Branch("R9_zdce",&(RRe[1][9]),"R9_zdce/F");
-    rtr->Branch("R1_vpde",&(RRe[2][1]),"R1_vpde/F"); // vpde relative luminosity
+    rtr->Branch("R1_vpde",&(RRe[2][1]),"R1_vpde/F"); // vpde relative luminosity (using mul)
     rtr->Branch("R2_vpde",&(RRe[2][2]),"R2_vpde/F");
     rtr->Branch("R3_vpde",&(RRe[2][3]),"R3_vpde/F");
     rtr->Branch("R4_vpde",&(RRe[2][4]),"R4_vpde/F");
@@ -1897,7 +1897,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R8_vpde",&(RRe[2][8]),"R8_vpde/F");
     rtr->Branch("R9_vpde",&(RRe[2][9]),"R9_vpde/F");
 
-    rtr->Branch("R1_bbcw",&(RRw[0][1]),"R1_bbcw/F"); // bbcw relative luminosity
+    rtr->Branch("R1_bbcw",&(RRw[0][1]),"R1_bbcw/F"); // bbcw relative luminosity (using mul)
     rtr->Branch("R2_bbcw",&(RRw[0][2]),"R2_bbcw/F");
     rtr->Branch("R3_bbcw",&(RRw[0][3]),"R3_bbcw/F");
     rtr->Branch("R4_bbcw",&(RRw[0][4]),"R4_bbcw/F");
@@ -1906,7 +1906,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_bbcw",&(RRw[0][7]),"R7_bbcw/F");
     rtr->Branch("R8_bbcw",&(RRw[0][8]),"R8_bbcw/F");
     rtr->Branch("R9_bbcw",&(RRw[0][9]),"R9_bbcw/F");
-    rtr->Branch("R1_zdcw",&(RRw[1][1]),"R1_zdcw/F"); // zdcw relative luminosity
+    rtr->Branch("R1_zdcw",&(RRw[1][1]),"R1_zdcw/F"); // zdcw relative luminosity (using mul)
     rtr->Branch("R2_zdcw",&(RRw[1][2]),"R2_zdcw/F");
     rtr->Branch("R3_zdcw",&(RRw[1][3]),"R3_zdcw/F");
     rtr->Branch("R4_zdcw",&(RRw[1][4]),"R4_zdcw/F");
@@ -1915,7 +1915,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_zdcw",&(RRw[1][7]),"R7_zdcw/F");
     rtr->Branch("R8_zdcw",&(RRw[1][8]),"R8_zdcw/F");
     rtr->Branch("R9_zdcw",&(RRw[1][9]),"R9_zdcw/F");
-    rtr->Branch("R1_vpdw",&(RRw[2][1]),"R1_vpdw/F"); // vpdw relative luminosity
+    rtr->Branch("R1_vpdw",&(RRw[2][1]),"R1_vpdw/F"); // vpdw relative luminosity (using mul)
     rtr->Branch("R2_vpdw",&(RRw[2][2]),"R2_vpdw/F");
     rtr->Branch("R3_vpdw",&(RRw[2][3]),"R3_vpdw/F");
     rtr->Branch("R4_vpdw",&(RRw[2][4]),"R4_vpdw/F");
@@ -1925,7 +1925,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R8_vpdw",&(RRw[2][8]),"R8_vpdw/F");
     rtr->Branch("R9_vpdw",&(RRw[2][9]),"R9_vpdw/F");
 
-    rtr->Branch("R1_bbcx",&(RRx[0][1]),"R1_bbcx/F"); // bbcx relative luminosity
+    rtr->Branch("R1_bbcx",&(RRx[0][1]),"R1_bbcx/F"); // bbcx relative luminosity (using mul)
     rtr->Branch("R2_bbcx",&(RRx[0][2]),"R2_bbcx/F");
     rtr->Branch("R3_bbcx",&(RRx[0][3]),"R3_bbcx/F");
     rtr->Branch("R4_bbcx",&(RRx[0][4]),"R4_bbcx/F");
@@ -1934,7 +1934,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_bbcx",&(RRx[0][7]),"R7_bbcx/F");
     rtr->Branch("R8_bbcx",&(RRx[0][8]),"R8_bbcx/F");
     rtr->Branch("R9_bbcx",&(RRx[0][9]),"R9_bbcx/F");
-    rtr->Branch("R1_zdcx",&(RRx[1][1]),"R1_zdcx/F"); // zdcx relative luminosity
+    rtr->Branch("R1_zdcx",&(RRx[1][1]),"R1_zdcx/F"); // zdcx relative luminosity (using mul)
     rtr->Branch("R2_zdcx",&(RRx[1][2]),"R2_zdcx/F");
     rtr->Branch("R3_zdcx",&(RRx[1][3]),"R3_zdcx/F");
     rtr->Branch("R4_zdcx",&(RRx[1][4]),"R4_zdcx/F");
@@ -1943,7 +1943,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_zdcx",&(RRx[1][7]),"R7_zdcx/F");
     rtr->Branch("R8_zdcx",&(RRx[1][8]),"R8_zdcx/F");
     rtr->Branch("R9_zdcx",&(RRx[1][9]),"R9_zdcx/F");
-    rtr->Branch("R1_vpdx",&(RRx[2][1]),"R1_vpdx/F"); // vpdx relative luminosity
+    rtr->Branch("R1_vpdx",&(RRx[2][1]),"R1_vpdx/F"); // vpdx relative luminosity (using mul)
     rtr->Branch("R2_vpdx",&(RRx[2][2]),"R2_vpdx/F");
     rtr->Branch("R3_vpdx",&(RRx[2][3]),"R3_vpdx/F");
     rtr->Branch("R4_vpdx",&(RRx[2][4]),"R4_vpdx/F");
@@ -1953,7 +1953,35 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R8_vpdx",&(RRx[2][8]),"R8_vpdx/F");
     rtr->Branch("R9_vpdx",&(RRx[2][9]),"R9_vpdx/F");
 
-    // -- mean rellum branches
+    rtr->Branch("R1_bbcrsc",&(RRrsc[0][1]),"R1_bbcrsc/F"); // bbc_rsc relative luminosity (using rsc)
+    rtr->Branch("R2_bbcrsc",&(RRrsc[0][2]),"R2_bbcrsc/F");
+    rtr->Branch("R3_bbcrsc",&(RRrsc[0][3]),"R3_bbcrsc/F");
+    rtr->Branch("R4_bbcrsc",&(RRrsc[0][4]),"R4_bbcrsc/F");
+    rtr->Branch("R5_bbcrsc",&(RRrsc[0][5]),"R5_bbcrsc/F");
+    rtr->Branch("R6_bbcrsc",&(RRrsc[0][6]),"R6_bbcrsc/F");
+    rtr->Branch("R7_bbcrsc",&(RRrsc[0][7]),"R7_bbcrsc/F");
+    rtr->Branch("R8_bbcrsc",&(RRrsc[0][8]),"R8_bbcrsc/F");
+    rtr->Branch("R9_bbcrsc",&(RRrsc[0][9]),"R9_bbcrsc/F");
+    rtr->Branch("R1_zdcrsc",&(RRrsc[1][1]),"R1_zdcrsc/F"); // zdc_rsc relative luminosity (using rsc)
+    rtr->Branch("R2_zdcrsc",&(RRrsc[1][2]),"R2_zdcrsc/F");
+    rtr->Branch("R3_zdcrsc",&(RRrsc[1][3]),"R3_zdcrsc/F");
+    rtr->Branch("R4_zdcrsc",&(RRrsc[1][4]),"R4_zdcrsc/F");
+    rtr->Branch("R5_zdcrsc",&(RRrsc[1][5]),"R5_zdcrsc/F");
+    rtr->Branch("R6_zdcrsc",&(RRrsc[1][6]),"R6_zdcrsc/F");
+    rtr->Branch("R7_zdcrsc",&(RRrsc[1][7]),"R7_zdcrsc/F");
+    rtr->Branch("R8_zdcrsc",&(RRrsc[1][8]),"R8_zdcrsc/F");
+    rtr->Branch("R9_zdcrsc",&(RRrsc[1][9]),"R9_zdcrsc/F");
+    rtr->Branch("R1_vpdrsc",&(RRrsc[2][1]),"R1_vpdrsc/F"); // vpd_rsc relative luminosity (using rsc)
+    rtr->Branch("R2_vpdrsc",&(RRrsc[2][2]),"R2_vpdrsc/F");
+    rtr->Branch("R3_vpdrsc",&(RRrsc[2][3]),"R3_vpdrsc/F");
+    rtr->Branch("R4_vpdrsc",&(RRrsc[2][4]),"R4_vpdrsc/F");
+    rtr->Branch("R5_vpdrsc",&(RRrsc[2][5]),"R5_vpdrsc/F");
+    rtr->Branch("R6_vpdrsc",&(RRrsc[2][6]),"R6_vpdrsc/F");
+    rtr->Branch("R7_vpdrsc",&(RRrsc[2][7]),"R7_vpdrsc/F");
+    rtr->Branch("R8_vpdrsc",&(RRrsc[2][8]),"R8_vpdrsc/F");
+    rtr->Branch("R9_vpdrsc",&(RRrsc[2][9]),"R9_vpdrsc/F");
+
+    // -- mean rellum branches (means over e,w,x)
     rtr->Branch("R1_bbc_mean",&(RR[0][1]),"R1_bbc_mean/F"); // mean bbc relative luminosity
     rtr->Branch("R2_bbc_mean",&(RR[0][2]),"R2_bbc_mean/F");
     rtr->Branch("R3_bbc_mean",&(RR[0][3]),"R3_bbc_mean/F");
@@ -1983,8 +2011,8 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R9_vpd_mean",&(RR[2][9]),"R9_vpd_mean/F");
 
 
-    // mean R3 errors
-    rtr->Branch("R1_bbc_mean_err",&(RR_err[0][1]),"R1_bbc_mean_err/F"); // bbc rellum error
+    // mean rellum errors
+    rtr->Branch("R1_bbc_mean_err",&(RR_err[0][1]),"R1_bbc_mean_err/F"); // bbc_{e,w,x mean} rellum error
     rtr->Branch("R2_bbc_mean_err",&(RR_err[0][2]),"R2_bbc_mean_err/F");
     rtr->Branch("R3_bbc_mean_err",&(RR_err[0][3]),"R3_bbc_mean_err/F");
     rtr->Branch("R4_bbc_mean_err",&(RR_err[0][4]),"R4_bbc_mean_err/F");
@@ -1993,7 +2021,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_bbc_mean_err",&(RR_err[0][7]),"R7_bbc_mean_err/F");
     rtr->Branch("R8_bbc_mean_err",&(RR_err[0][8]),"R8_bbc_mean_err/F");
     rtr->Branch("R9_bbc_mean_err",&(RR_err[0][9]),"R9_bbc_mean_err/F");
-    rtr->Branch("R1_zdc_mean_err",&(RR_err[1][1]),"R1_zdc_mean_err/F"); // zdc rellum error
+    rtr->Branch("R1_zdc_mean_err",&(RR_err[1][1]),"R1_zdc_mean_err/F"); // zdc_{e,w,x mean} rellum error
     rtr->Branch("R2_zdc_mean_err",&(RR_err[1][2]),"R2_zdc_mean_err/F");
     rtr->Branch("R3_zdc_mean_err",&(RR_err[1][3]),"R3_zdc_mean_err/F");
     rtr->Branch("R4_zdc_mean_err",&(RR_err[1][4]),"R4_zdc_mean_err/F");
@@ -2002,7 +2030,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_zdc_mean_err",&(RR_err[1][7]),"R7_zdc_mean_err/F");
     rtr->Branch("R8_zdc_mean_err",&(RR_err[1][8]),"R8_zdc_mean_err/F");
     rtr->Branch("R9_zdc_mean_err",&(RR_err[1][9]),"R9_zdc_mean_err/F");
-    rtr->Branch("R1_vpd_mean_err",&(RR_err[2][1]),"R1_vpd_mean_err/F"); // vpd rellum error
+    rtr->Branch("R1_vpd_mean_err",&(RR_err[2][1]),"R1_vpd_mean_err/F"); // vpd_{e,w,x mean} rellum error
     rtr->Branch("R2_vpd_mean_err",&(RR_err[2][2]),"R2_vpd_mean_err/F");
     rtr->Branch("R3_vpd_mean_err",&(RR_err[2][3]),"R3_vpd_mean_err/F");
     rtr->Branch("R4_vpd_mean_err",&(RR_err[2][4]),"R4_vpd_mean_err/F");
@@ -2011,6 +2039,35 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     rtr->Branch("R7_vpd_mean_err",&(RR_err[2][7]),"R7_vpd_mean_err/F");
     rtr->Branch("R8_vpd_mean_err",&(RR_err[2][8]),"R8_vpd_mean_err/F");
     rtr->Branch("R9_vpd_mean_err",&(RR_err[2][9]),"R9_vpd_mean_err/F");
+
+    // rsc rellum error bars
+    rtr->Branch("R1_bbc_rsc_err",&(RR_rscerr[0][1]),"R1_bbc_rsc_err/F"); // bbc_rsc rellum error
+    rtr->Branch("R2_bbc_rsc_err",&(RR_rscerr[0][2]),"R2_bbc_rsc_err/F");
+    rtr->Branch("R3_bbc_rsc_err",&(RR_rscerr[0][3]),"R3_bbc_rsc_err/F");
+    rtr->Branch("R4_bbc_rsc_err",&(RR_rscerr[0][4]),"R4_bbc_rsc_err/F");
+    rtr->Branch("R5_bbc_rsc_err",&(RR_rscerr[0][5]),"R5_bbc_rsc_err/F");
+    rtr->Branch("R6_bbc_rsc_err",&(RR_rscerr[0][6]),"R6_bbc_rsc_err/F");
+    rtr->Branch("R7_bbc_rsc_err",&(RR_rscerr[0][7]),"R7_bbc_rsc_err/F");
+    rtr->Branch("R8_bbc_rsc_err",&(RR_rscerr[0][8]),"R8_bbc_rsc_err/F");
+    rtr->Branch("R9_bbc_rsc_err",&(RR_rscerr[0][9]),"R9_bbc_rsc_err/F");
+    rtr->Branch("R1_zdc_rsc_err",&(RR_rscerr[1][1]),"R1_zdc_rsc_err/F"); // zdc_rsc rellum error
+    rtr->Branch("R2_zdc_rsc_err",&(RR_rscerr[1][2]),"R2_zdc_rsc_err/F");
+    rtr->Branch("R3_zdc_rsc_err",&(RR_rscerr[1][3]),"R3_zdc_rsc_err/F");
+    rtr->Branch("R4_zdc_rsc_err",&(RR_rscerr[1][4]),"R4_zdc_rsc_err/F");
+    rtr->Branch("R5_zdc_rsc_err",&(RR_rscerr[1][5]),"R5_zdc_rsc_err/F");
+    rtr->Branch("R6_zdc_rsc_err",&(RR_rscerr[1][6]),"R6_zdc_rsc_err/F");
+    rtr->Branch("R7_zdc_rsc_err",&(RR_rscerr[1][7]),"R7_zdc_rsc_err/F");
+    rtr->Branch("R8_zdc_rsc_err",&(RR_rscerr[1][8]),"R8_zdc_rsc_err/F");
+    rtr->Branch("R9_zdc_rsc_err",&(RR_rscerr[1][9]),"R9_zdc_rsc_err/F");
+    rtr->Branch("R1_vpd_rsc_err",&(RR_rscerr[2][1]),"R1_vpd_rsc_err/F"); // vpd_rsc rellum error
+    rtr->Branch("R2_vpd_rsc_err",&(RR_rscerr[2][2]),"R2_vpd_rsc_err/F");
+    rtr->Branch("R3_vpd_rsc_err",&(RR_rscerr[2][3]),"R3_vpd_rsc_err/F");
+    rtr->Branch("R4_vpd_rsc_err",&(RR_rscerr[2][4]),"R4_vpd_rsc_err/F");
+    rtr->Branch("R5_vpd_rsc_err",&(RR_rscerr[2][5]),"R5_vpd_rsc_err/F");
+    rtr->Branch("R6_vpd_rsc_err",&(RR_rscerr[2][6]),"R6_vpd_rsc_err/F");
+    rtr->Branch("R7_vpd_rsc_err",&(RR_rscerr[2][7]),"R7_vpd_rsc_err/F");
+    rtr->Branch("R8_vpd_rsc_err",&(RR_rscerr[2][8]),"R8_vpd_rsc_err/F");
+    rtr->Branch("R9_vpd_rsc_err",&(RR_rscerr[2][9]),"R9_vpd_rsc_err/F");
 
 
     // -- diagnostic branches (only for R3)
@@ -2047,7 +2104,9 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
           RRe[t][r] = R_mul_d[t][0][r]->GetBinContent(b);
           RRw[t][r] = R_mul_d[t][1][r]->GetBinContent(b);
           RRx[t][r] = R_mul_d[t][2][r]->GetBinContent(b);
+          RRrsc[t][r] = R_rsc_d[t][r]->GetBinContent(b);
           RR_err[t][r] = mean_R[t][r]->GetBinError(b);
+          RR_rscerr[t][r] = R_rsc_d[t][r]->GetBinError(b);
         };
       };
       for(Int_t c=0; c<3; c++)

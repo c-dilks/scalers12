@@ -24,8 +24,10 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   Float_t RRe[3][10]; // [tbit (bbc,zdc,vpd)] [rellum]
   Float_t RRw[3][10]; 
   Float_t RRx[3][10]; 
+  Float_t RRrsc[3][10]; 
   Float_t RR[3][10]; // mean R
   Float_t RR_err[3][10]; // error of mean R
+  Float_t RR_rscerr[3][10]; // error of rsc R
   Float_t R_LL[3]; // systematic uncertainty
   Float_t scarat[3][4]; // zdc/vpd
   Int_t i_sums,runnum_sums,fill_sums,fi_sums; // (fi not in rdat tree)
@@ -129,6 +131,34 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rdat->SetBranchAddress("R8_vpdx",&(RRx[2][8]));
   rdat->SetBranchAddress("R9_vpdx",&(RRx[2][9]));
 
+  rdat->SetBranchAddress("R1_bbcrsc",&(RRrsc[0][1]));
+  rdat->SetBranchAddress("R2_bbcrsc",&(RRrsc[0][2]));
+  rdat->SetBranchAddress("R3_bbcrsc",&(RRrsc[0][3]));
+  rdat->SetBranchAddress("R4_bbcrsc",&(RRrsc[0][4]));
+  rdat->SetBranchAddress("R5_bbcrsc",&(RRrsc[0][5]));
+  rdat->SetBranchAddress("R6_bbcrsc",&(RRrsc[0][6]));
+  rdat->SetBranchAddress("R7_bbcrsc",&(RRrsc[0][7]));
+  rdat->SetBranchAddress("R8_bbcrsc",&(RRrsc[0][8]));
+  rdat->SetBranchAddress("R9_bbcrsc",&(RRrsc[0][9]));
+  rdat->SetBranchAddress("R1_zdcrsc",&(RRrsc[1][1]));
+  rdat->SetBranchAddress("R2_zdcrsc",&(RRrsc[1][2]));
+  rdat->SetBranchAddress("R3_zdcrsc",&(RRrsc[1][3]));
+  rdat->SetBranchAddress("R4_zdcrsc",&(RRrsc[1][4]));
+  rdat->SetBranchAddress("R5_zdcrsc",&(RRrsc[1][5]));
+  rdat->SetBranchAddress("R6_zdcrsc",&(RRrsc[1][6]));
+  rdat->SetBranchAddress("R7_zdcrsc",&(RRrsc[1][7]));
+  rdat->SetBranchAddress("R8_zdcrsc",&(RRrsc[1][8]));
+  rdat->SetBranchAddress("R9_zdcrsc",&(RRrsc[1][9]));
+  rdat->SetBranchAddress("R1_vpdrsc",&(RRrsc[2][1]));
+  rdat->SetBranchAddress("R2_vpdrsc",&(RRrsc[2][2]));
+  rdat->SetBranchAddress("R3_vpdrsc",&(RRrsc[2][3]));
+  rdat->SetBranchAddress("R4_vpdrsc",&(RRrsc[2][4]));
+  rdat->SetBranchAddress("R5_vpdrsc",&(RRrsc[2][5]));
+  rdat->SetBranchAddress("R6_vpdrsc",&(RRrsc[2][6]));
+  rdat->SetBranchAddress("R7_vpdrsc",&(RRrsc[2][7]));
+  rdat->SetBranchAddress("R8_vpdrsc",&(RRrsc[2][8]));
+  rdat->SetBranchAddress("R9_vpdrsc",&(RRrsc[2][9]));
+
   rdat->SetBranchAddress("R1_bbc_mean",&(RR[0][1]));
   rdat->SetBranchAddress("R2_bbc_mean",&(RR[0][2]));
   rdat->SetBranchAddress("R3_bbc_mean",&(RR[0][3]));
@@ -184,6 +214,34 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rdat->SetBranchAddress("R7_vpd_mean_err",&(RR_err[2][7]));
   rdat->SetBranchAddress("R8_vpd_mean_err",&(RR_err[2][8]));
   rdat->SetBranchAddress("R9_vpd_mean_err",&(RR_err[2][9]));
+
+  rdat->SetBranchAddress("R1_bbc_rsc_err",&(RR_rscerr[0][1]));
+  rdat->SetBranchAddress("R2_bbc_rsc_err",&(RR_rscerr[0][2]));
+  rdat->SetBranchAddress("R3_bbc_rsc_err",&(RR_rscerr[0][3]));
+  rdat->SetBranchAddress("R4_bbc_rsc_err",&(RR_rscerr[0][4]));
+  rdat->SetBranchAddress("R5_bbc_rsc_err",&(RR_rscerr[0][5]));
+  rdat->SetBranchAddress("R6_bbc_rsc_err",&(RR_rscerr[0][6]));
+  rdat->SetBranchAddress("R7_bbc_rsc_err",&(RR_rscerr[0][7]));
+  rdat->SetBranchAddress("R8_bbc_rsc_err",&(RR_rscerr[0][8]));
+  rdat->SetBranchAddress("R9_bbc_rsc_err",&(RR_rscerr[0][9]));
+  rdat->SetBranchAddress("R1_zdc_rsc_err",&(RR_rscerr[1][1]));
+  rdat->SetBranchAddress("R2_zdc_rsc_err",&(RR_rscerr[1][2]));
+  rdat->SetBranchAddress("R3_zdc_rsc_err",&(RR_rscerr[1][3]));
+  rdat->SetBranchAddress("R4_zdc_rsc_err",&(RR_rscerr[1][4]));
+  rdat->SetBranchAddress("R5_zdc_rsc_err",&(RR_rscerr[1][5]));
+  rdat->SetBranchAddress("R6_zdc_rsc_err",&(RR_rscerr[1][6]));
+  rdat->SetBranchAddress("R7_zdc_rsc_err",&(RR_rscerr[1][7]));
+  rdat->SetBranchAddress("R8_zdc_rsc_err",&(RR_rscerr[1][8]));
+  rdat->SetBranchAddress("R9_zdc_rsc_err",&(RR_rscerr[1][9]));
+  rdat->SetBranchAddress("R1_vpd_rsc_err",&(RR_rscerr[2][1]));
+  rdat->SetBranchAddress("R2_vpd_rsc_err",&(RR_rscerr[2][2]));
+  rdat->SetBranchAddress("R3_vpd_rsc_err",&(RR_rscerr[2][3]));
+  rdat->SetBranchAddress("R4_vpd_rsc_err",&(RR_rscerr[2][4]));
+  rdat->SetBranchAddress("R5_vpd_rsc_err",&(RR_rscerr[2][5]));
+  rdat->SetBranchAddress("R6_vpd_rsc_err",&(RR_rscerr[2][6]));
+  rdat->SetBranchAddress("R7_vpd_rsc_err",&(RR_rscerr[2][7]));
+  rdat->SetBranchAddress("R8_vpd_rsc_err",&(RR_rscerr[2][8]));
+  rdat->SetBranchAddress("R9_vpd_rsc_err",&(RR_rscerr[2][9]));
 
   rdat->SetBranchAddress("d_vz_e",&(d_vz[0]));
   rdat->SetBranchAddress("d_vz_w",&(d_vz[1]));
@@ -325,6 +383,33 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rellum->Branch("R7_vpdx",&(RRx[2][7]),"R7_vpdx/F");
   rellum->Branch("R8_vpdx",&(RRx[2][8]),"R8_vpdx/F");
   rellum->Branch("R9_vpdx",&(RRx[2][9]),"R9_vpdx/F");
+  rellum->Branch("R1_bbcrsc",&(RRrsc[0][1]),"R1_bbcrsc/F"); // bbcrsc relative luminosity
+  rellum->Branch("R2_bbcrsc",&(RRrsc[0][2]),"R2_bbcrsc/F");
+  rellum->Branch("R3_bbcrsc",&(RRrsc[0][3]),"R3_bbcrsc/F");
+  rellum->Branch("R4_bbcrsc",&(RRrsc[0][4]),"R4_bbcrsc/F");
+  rellum->Branch("R5_bbcrsc",&(RRrsc[0][5]),"R5_bbcrsc/F");
+  rellum->Branch("R6_bbcrsc",&(RRrsc[0][6]),"R6_bbcrsc/F");
+  rellum->Branch("R7_bbcrsc",&(RRrsc[0][7]),"R7_bbcrsc/F");
+  rellum->Branch("R8_bbcrsc",&(RRrsc[0][8]),"R8_bbcrsc/F");
+  rellum->Branch("R9_bbcrsc",&(RRrsc[0][9]),"R9_bbcrsc/F");
+  rellum->Branch("R1_zdcrsc",&(RRrsc[1][1]),"R1_zdcrsc/F"); // zdcrsc relative luminosity
+  rellum->Branch("R2_zdcrsc",&(RRrsc[1][2]),"R2_zdcrsc/F");
+  rellum->Branch("R3_zdcrsc",&(RRrsc[1][3]),"R3_zdcrsc/F");
+  rellum->Branch("R4_zdcrsc",&(RRrsc[1][4]),"R4_zdcrsc/F");
+  rellum->Branch("R5_zdcrsc",&(RRrsc[1][5]),"R5_zdcrsc/F");
+  rellum->Branch("R6_zdcrsc",&(RRrsc[1][6]),"R6_zdcrsc/F");
+  rellum->Branch("R7_zdcrsc",&(RRrsc[1][7]),"R7_zdcrsc/F");
+  rellum->Branch("R8_zdcrsc",&(RRrsc[1][8]),"R8_zdcrsc/F");
+  rellum->Branch("R9_zdcrsc",&(RRrsc[1][9]),"R9_zdcrsc/F");
+  rellum->Branch("R1_vpdrsc",&(RRrsc[2][1]),"R1_vpdrsc/F"); // vpdrsc relative luminosity
+  rellum->Branch("R2_vpdrsc",&(RRrsc[2][2]),"R2_vpdrsc/F");
+  rellum->Branch("R3_vpdrsc",&(RRrsc[2][3]),"R3_vpdrsc/F");
+  rellum->Branch("R4_vpdrsc",&(RRrsc[2][4]),"R4_vpdrsc/F");
+  rellum->Branch("R5_vpdrsc",&(RRrsc[2][5]),"R5_vpdrsc/F");
+  rellum->Branch("R6_vpdrsc",&(RRrsc[2][6]),"R6_vpdrsc/F");
+  rellum->Branch("R7_vpdrsc",&(RRrsc[2][7]),"R7_vpdrsc/F");
+  rellum->Branch("R8_vpdrsc",&(RRrsc[2][8]),"R8_vpdrsc/F");
+  rellum->Branch("R9_vpdrsc",&(RRrsc[2][9]),"R9_vpdrsc/F");
   rellum->Branch("R1_bbc_mean",&(RR[0][1]),"R1_bbc_mean/F"); // mean bbc relative luminosity
   rellum->Branch("R2_bbc_mean",&(RR[0][2]),"R2_bbc_mean/F");
   rellum->Branch("R3_bbc_mean",&(RR[0][3]),"R3_bbc_mean/F");
@@ -352,7 +437,7 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rellum->Branch("R7_vpd_mean",&(RR[2][7]),"R7_vpd_mean/F");
   rellum->Branch("R8_vpd_mean",&(RR[2][8]),"R8_vpd_mean/F");
   rellum->Branch("R9_vpd_mean",&(RR[2][9]),"R9_vpd_mean/F");
-  rellum->Branch("R1_bbc_mean_err",&(RR_err[0][1]),"R1_bbc_mean_err/F"); // mean_err bbc rellum err
+  rellum->Branch("R1_bbc_mean_err",&(RR_err[0][1]),"R1_bbc_mean_err/F"); // mean bbc{e,w,x} rellum err
   rellum->Branch("R2_bbc_mean_err",&(RR_err[0][2]),"R2_bbc_mean_err/F");
   rellum->Branch("R3_bbc_mean_err",&(RR_err[0][3]),"R3_bbc_mean_err/F");
   rellum->Branch("R4_bbc_mean_err",&(RR_err[0][4]),"R4_bbc_mean_err/F");
@@ -361,7 +446,7 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rellum->Branch("R7_bbc_mean_err",&(RR_err[0][7]),"R7_bbc_mean_err/F");
   rellum->Branch("R8_bbc_mean_err",&(RR_err[0][8]),"R8_bbc_mean_err/F");
   rellum->Branch("R9_bbc_mean_err",&(RR_err[0][9]),"R9_bbc_mean_err/F");
-  rellum->Branch("R1_zdc_mean_err",&(RR_err[1][1]),"R1_zdc_mean_err/F"); // mean_err zdc rellum err
+  rellum->Branch("R1_zdc_mean_err",&(RR_err[1][1]),"R1_zdc_mean_err/F"); // mean zdc{e,w,x} rellum err
   rellum->Branch("R2_zdc_mean_err",&(RR_err[1][2]),"R2_zdc_mean_err/F");
   rellum->Branch("R3_zdc_mean_err",&(RR_err[1][3]),"R3_zdc_mean_err/F");
   rellum->Branch("R4_zdc_mean_err",&(RR_err[1][4]),"R4_zdc_mean_err/F");
@@ -370,7 +455,7 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rellum->Branch("R7_zdc_mean_err",&(RR_err[1][7]),"R7_zdc_mean_err/F");
   rellum->Branch("R8_zdc_mean_err",&(RR_err[1][8]),"R8_zdc_mean_err/F");
   rellum->Branch("R9_zdc_mean_err",&(RR_err[1][9]),"R9_zdc_mean_err/F");
-  rellum->Branch("R1_vpd_mean_err",&(RR_err[2][1]),"R1_vpd_mean_err/F"); // mean_err vpd rellum err
+  rellum->Branch("R1_vpd_mean_err",&(RR_err[2][1]),"R1_vpd_mean_err/F"); // mean vpd{e,w,x} rellum err
   rellum->Branch("R2_vpd_mean_err",&(RR_err[2][2]),"R2_vpd_mean_err/F");
   rellum->Branch("R3_vpd_mean_err",&(RR_err[2][3]),"R3_vpd_mean_err/F");
   rellum->Branch("R4_vpd_mean_err",&(RR_err[2][4]),"R4_vpd_mean_err/F");
@@ -379,6 +464,33 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rellum->Branch("R7_vpd_mean_err",&(RR_err[2][7]),"R7_vpd_mean_err/F");
   rellum->Branch("R8_vpd_mean_err",&(RR_err[2][8]),"R8_vpd_mean_err/F");
   rellum->Branch("R9_vpd_mean_err",&(RR_err[2][9]),"R9_vpd_mean_err/F");
+  rellum->Branch("R1_bbc_rsc_err",&(RR_rscerr[0][1]),"R1_bbc_rsc_err/F"); // bbc_rsc rellum err
+  rellum->Branch("R2_bbc_rsc_err",&(RR_rscerr[0][2]),"R2_bbc_rsc_err/F");
+  rellum->Branch("R3_bbc_rsc_err",&(RR_rscerr[0][3]),"R3_bbc_rsc_err/F");
+  rellum->Branch("R4_bbc_rsc_err",&(RR_rscerr[0][4]),"R4_bbc_rsc_err/F");
+  rellum->Branch("R5_bbc_rsc_err",&(RR_rscerr[0][5]),"R5_bbc_rsc_err/F");
+  rellum->Branch("R6_bbc_rsc_err",&(RR_rscerr[0][6]),"R6_bbc_rsc_err/F");
+  rellum->Branch("R7_bbc_rsc_err",&(RR_rscerr[0][7]),"R7_bbc_rsc_err/F");
+  rellum->Branch("R8_bbc_rsc_err",&(RR_rscerr[0][8]),"R8_bbc_rsc_err/F");
+  rellum->Branch("R9_bbc_rsc_err",&(RR_rscerr[0][9]),"R9_bbc_rsc_err/F");
+  rellum->Branch("R1_zdc_rsc_err",&(RR_rscerr[1][1]),"R1_zdc_rsc_err/F"); // zdc_rsc rellum err
+  rellum->Branch("R2_zdc_rsc_err",&(RR_rscerr[1][2]),"R2_zdc_rsc_err/F");
+  rellum->Branch("R3_zdc_rsc_err",&(RR_rscerr[1][3]),"R3_zdc_rsc_err/F");
+  rellum->Branch("R4_zdc_rsc_err",&(RR_rscerr[1][4]),"R4_zdc_rsc_err/F");
+  rellum->Branch("R5_zdc_rsc_err",&(RR_rscerr[1][5]),"R5_zdc_rsc_err/F");
+  rellum->Branch("R6_zdc_rsc_err",&(RR_rscerr[1][6]),"R6_zdc_rsc_err/F");
+  rellum->Branch("R7_zdc_rsc_err",&(RR_rscerr[1][7]),"R7_zdc_rsc_err/F");
+  rellum->Branch("R8_zdc_rsc_err",&(RR_rscerr[1][8]),"R8_zdc_rsc_err/F");
+  rellum->Branch("R9_zdc_rsc_err",&(RR_rscerr[1][9]),"R9_zdc_rsc_err/F");
+  rellum->Branch("R1_vpd_rsc_err",&(RR_rscerr[2][1]),"R1_vpd_rsc_err/F"); // vpd_rsc rellum err
+  rellum->Branch("R2_vpd_rsc_err",&(RR_rscerr[2][2]),"R2_vpd_rsc_err/F");
+  rellum->Branch("R3_vpd_rsc_err",&(RR_rscerr[2][3]),"R3_vpd_rsc_err/F");
+  rellum->Branch("R4_vpd_rsc_err",&(RR_rscerr[2][4]),"R4_vpd_rsc_err/F");
+  rellum->Branch("R5_vpd_rsc_err",&(RR_rscerr[2][5]),"R5_vpd_rsc_err/F");
+  rellum->Branch("R6_vpd_rsc_err",&(RR_rscerr[2][6]),"R6_vpd_rsc_err/F");
+  rellum->Branch("R7_vpd_rsc_err",&(RR_rscerr[2][7]),"R7_vpd_rsc_err/F");
+  rellum->Branch("R8_vpd_rsc_err",&(RR_rscerr[2][8]),"R8_vpd_rsc_err/F");
+  rellum->Branch("R9_vpd_rsc_err",&(RR_rscerr[2][9]),"R9_vpd_rsc_err/F");
   rellum->Branch("d_vz_e",&(d_vz[0]),"d_vz_e/F"); // zdc-vpd diagnostic
   rellum->Branch("d_vz_w",&(d_vz[1]),"d_vz_w/F");
   rellum->Branch("d_vz_x",&(d_vz[2]),"d_vz_x/F");
@@ -393,14 +505,12 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rellum->Branch("d_wx_vpd",&(d_xx[2][2]),"d_wx_vpd/F");
   rellum->Branch("isConsistent",&isConsistent,"isConsistent/O"); // true if diagnostics passed
   rellum->Branch("pattern",&pattern,"pattern/I"); // spin pattern no. (see sumTree.C)
-  //rellum->Branch("R_LL_e",&(R_LL[0]),"R_LL_e/F"); // R_LL (see rellum4.C for definition)
-  //rellum->Branch("R_LL_w",&(R_LL[1]),"R_LL_w/F");
-  //rellum->Branch("R_LL_x",&(R_LL[2]),"R_LL_x/F");
-  //rellum->Branch("scarat",scarat,"scarat[3][4]/F"); // zdc / vpd
 
 
   // diagnostic consistency bounds (see if statement in tree for loop below)
   // -- these bounds were determined by eye
+  // -- these are so far only done using cdf acc+mul corrections; but not rate-safe corrections;
+  //    this can be modified later, but I so far see no reason that it's needed
   Float_t d_vz_cc[3];
   Float_t d_xx_cc[3][3];
   Float_t t_tau;
