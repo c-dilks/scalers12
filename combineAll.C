@@ -576,4 +576,8 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
   rellum->Write();
 
   printf("\nrellum tree written to rtree.root\n");
+
+  printf("%d / %d rellum tree entries pass consistency check\n",
+    rellum->GetEntries("isConsistent"),
+    rellum->GetEntries());
 };

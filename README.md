@@ -1,4 +1,4 @@
-RELATIVE LUMINOSITY ANALYSIS -- Run 13 pp510 (L)
+RELATIVE LUMINOSITY ANALYSIS
 ----------------------------
 
 Installation
@@ -39,6 +39,26 @@ Analysis Procedure
       `files_to_retrieve*.lst` will be created, with 150 requests per file
       - submit using `hpss_user.pl -f [list]`
       - check carousel status using `hpss_user.pl -w`
+  - 2011 instructions
+    - need runlist; I didn't do run QA for run11, so I wrote a couple short scripts
+      to extract the run number and fill numbers present in the available output
+      files; run `../../get_run_list.C` followed by `../../append_fill_numbers`;
+      the file `runlist_with_fills` can be copied to `scalers11t/goodruns.dat`
+      (and to wherever you need it in order to download the scaler files)
+    - scaler files on HPSS for run11 were saved including a UNIX timestamp, which
+      makes it difficult to generate a list of files
+    - first, type `hsi` and cd to `/home/starsink/raw/daq/2012`
+    - then type `out > FILE_LIST`; this will create a file called `FILE_LIST` in 
+      your current local (RCAS) directory and pipe all output from hsi to this file
+    - run11 rellum uses board 3&4 data, so, for example,  to list all the board 3 scaler files,
+      type `ls */*/*_3_*.sca` and be patient 
+      - board 3 is read out once every run
+      - board 4 is read out once every 1000 seconds and once at the end of the run
+    - when the command is done, exit `HPSS` and check `FILE_LIST` for the proper output
+    - execute `BuildList_2011` to build lists of files to submit to the data carousel; 
+      `files_to_retrieve*.lst` will be created, with 150 requests per file
+      - submit using `hpss_user.pl -f [list]`
+      - check carousel status using `hpss_user.pl -w`
 
 2. Read the scalers scaler bit reader reader from Zilong (32-bit for run13 and 24-bit for run12)
   - 32-bit scaler reader (for 2013)
@@ -65,6 +85,29 @@ Analysis Procedure
         - ZDC(0-7) 
         - VPD(0-7)
         - total bXings
+  - 24-bit scaler reader (for 2011)
+    - since we have the choice of using board 3 or 4, we select one
+      by passing a board number to `read_scalers`
+    - before running this, make two directories: `datfiles_bd3` and `datfiles_bd4`;
+      make `datfiles` a symlink to the directory that corresponds to the board
+      you're analyzing; this symlink should remain unchanged throughout the rest of the
+      analysis (in other words, to change board number, you must redo the analysis
+      starting from the datfiles)
+      - board 3 reads out once per run
+      - board 4 reads out once every 1000 seconds and at the end of the run
+    - `read_scalers` in `scalers11t` directory executes `sca_read_bin.o` via condor
+      - reads all scaler files in `/GreyDisk1/sca2011t`
+      - outputs the read files in `datfiles` directory
+      - datfile columns
+        - bunch crossing (bXing) number
+        - BBC[0-7] (see zilong's scaler bit definitions below)
+        - ZDC[0-7] 
+        - VPD[0-7]
+        - total bXings
+    - see `bit_doc.txt` for further information
+    - if there are multiple scaler files for a run (board 4 seems to read out 
+      every 1,000 seconds), you can run `datadd` to add the columns of each run;
+      the original, un-added datfiles are backed up into `datfiles/orig`
 
 3. Obtain spin patterns
   - Verify we have the fill numbers (`fill.txt`) and the corresponding
