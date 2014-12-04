@@ -1566,7 +1566,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   char c_RD_n[10][32];
   for(Int_t r=1; r<10; r++)
   {
-    sprintf(c_RD_n[r],"c_R%d_mul_minus_rsc",r);
+    sprintf(c_RD_n[r],"c_R%d_rsc_minus_mul",r);
     c_RD[r] = new TCanvas(c_RD_n[r],c_RD_n[r],1100*sf,700*sf);
     c_RD[r]->Divide(1,3);
     for(Int_t ttt=1; ttt<=3; ttt++)
@@ -2146,6 +2146,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     char c_R_png[3][10][256];
     char c_dev_png[3][10][256];
     char c_mean_png[10][256];
+    char c_RD_png[10][256];
     char c_D_png[10][256];
     char c_SD_png[3][10][256];
     char c_rate_fac_png[3][256];
@@ -2191,14 +2192,16 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
         sprintf(c_SD_png[1][r],"%s/east_minus_coin_R%d_%s.png",pngdir,r,var);
         sprintf(c_SD_png[2][r],"%s/west_minus_coin_R%d_%s.png",pngdir,r,var);
         sprintf(c_mean_png[r],"%s/mean_R%d_%s.png",pngdir,r,var);
+        sprintf(c_RD_png[r],"%s/rsc_minus_mul_R%d_%s.png",pngdir,r,var);
         c_D[r]->Print(c_D_png[r],"png");
         for(Int_t x=0; x<3; x++)
           c_SD[x][r]->Print(c_SD_png[x][r],"png");
         c_mean[r]->Print(c_mean_png[r],"png");
+        c_RD[r]->Print(c_RD_png[r],"png");
       };
-    char spin_pat_png[64];
-    sprintf(spin_pat_png,"%s/spin_pat_%s.png",pngdir,var);
-    c_spin_pat->Print(spin_pat_png,"png");
+      char spin_pat_png[64];
+      sprintf(spin_pat_png,"%s/spin_pat_%s.png",pngdir,var);
+      c_spin_pat->Print(spin_pat_png,"png");
     };
     if(specificFill==0 && specificRun==0 && !strcmp(var,"i"))
     {
