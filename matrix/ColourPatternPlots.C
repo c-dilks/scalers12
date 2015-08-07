@@ -29,14 +29,14 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
   sprintf(pat_str[8],"B[%s]  Y[%s]  (%d)",beampat[4],beampat[2],pat[8]); 
   */
   // new way (just has more details)
-  sprintf(pat_str[1],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[1]/10,beampat[1],pat[1]%10,beampat[3]); 
-  sprintf(pat_str[2],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[2]/10,beampat[1],pat[2]%10,beampat[4]); 
-  sprintf(pat_str[3],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[3]/10,beampat[2],pat[3]%10,beampat[3]); 
-  sprintf(pat_str[4],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[4]/10,beampat[2],pat[4]%10,beampat[4]); 
-  sprintf(pat_str[5],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[5]/10,beampat[3],pat[5]%10,beampat[1]); 
-  sprintf(pat_str[6],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[6]/10,beampat[3],pat[6]%10,beampat[2]); 
-  sprintf(pat_str[7],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[7]/10,beampat[4],pat[7]%10,beampat[1]); 
-  sprintf(pat_str[8],"B_{%d}[%s]  Y_{%d}[%s]  (WORKING........)",pat[8]/10,beampat[4],pat[8]%10,beampat[2]); 
+  sprintf(pat_str[1],"B_{%d}[%s]  Y_{%d}[%s]  ( S O O S O S S O )",pat[1]/10,beampat[1],pat[1]%10,beampat[3]); 
+  sprintf(pat_str[2],"B_{%d}[%s]  Y_{%d}[%s]  ( O S S O S O O S )",pat[2]/10,beampat[1],pat[2]%10,beampat[4]); 
+  sprintf(pat_str[3],"B_{%d}[%s]  Y_{%d}[%s]  ( O S S O S O O S )",pat[3]/10,beampat[2],pat[3]%10,beampat[3]); 
+  sprintf(pat_str[4],"B_{%d}[%s]  Y_{%d}[%s]  ( S O O S O S S O )",pat[4]/10,beampat[2],pat[4]%10,beampat[4]); 
+  sprintf(pat_str[5],"B_{%d}[%s]  Y_{%d}[%s]  ( S O O S O S S O )",pat[5]/10,beampat[3],pat[5]%10,beampat[1]); 
+  sprintf(pat_str[6],"B_{%d}[%s]  Y_{%d}[%s]  ( O S S O S O O S )",pat[6]/10,beampat[3],pat[6]%10,beampat[2]); 
+  sprintf(pat_str[7],"B_{%d}[%s]  Y_{%d}[%s]  ( O S S O S O O S )",pat[7]/10,beampat[4],pat[7]%10,beampat[1]); 
+  sprintf(pat_str[8],"B_{%d}[%s]  Y_{%d}[%s]  ( S O O S O S S O )",pat[8]/10,beampat[4],pat[8]%10,beampat[2]); 
 
   const Int_t NASY=10;
 
@@ -113,8 +113,8 @@ void ColourPatternPlots(const char * numerDet="zdce", const char * denomDet="vpd
 
 
   // set plot colours
-  //Color_t colours[NPAT] = {kBlack,kOrange,kRed,kMagenta,kBlue,kCyan+1,kGreen+1,kYellow+2,kViolet-6}; // individual colours
-  Color_t colours[NPAT] = {kBlack,kRed,kMagenta,kBlue,kGreen+1,kRed,kBlue,kMagenta,kGreen+1}; // partner colours
+  Color_t colours[NPAT] = {kBlack,kOrange,kRed,kMagenta,kBlue,kCyan+1,kGreen+1,kYellow+2,kViolet-6}; // individual colours
+  //Color_t colours[NPAT] = {kBlack,kRed,kMagenta,kBlue,kGreen+1,kRed,kBlue,kMagenta,kGreen+1}; // partner colours
   for(Int_t pp=0; pp<NPAT; pp++)
   {
     for(Int_t aa=1; aa<NASY; aa++)

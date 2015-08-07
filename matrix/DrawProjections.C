@@ -12,7 +12,8 @@ void DrawProjections(const char * numer="zdce",
                      const char * denom="vpdx",
                      Int_t Nomit=-1)
 {
-  const Float_t WIDTH = 3e-3;
+  const Float_t WIDTH = 0.9e-3;
+  gStyle->SetOptFit(1);
   char filename[256];
   if(Nomit==-1)
     sprintf(filename,"fit_result.%s.%s.root",numer,denom);
@@ -45,7 +46,8 @@ void DrawProjections(const char * numer="zdce",
   char asym_dist_all_n[256];
   char asym_dist_all_t[256];
   sprintf(asym_dist_all_n,"asym_dist_all");
-  sprintf(asym_dist_all_t,"A_{LL} distribution for %s/%s%s",numer,denom,omit_str);
+  //sprintf(asym_dist_all_t,"Run 12 S_{LL} distribution for %s/%s%s",numer,denom,omit_str);
+  sprintf(asym_dist_all_t,"Run 12 S_{LL} distribution for rate-safe %s/%s%s",numer,denom,omit_str);
   TH1D * asym_dist_all = new TH1D(asym_dist_all_n,asym_dist_all_t,100,-1*WIDTH,WIDTH);
 
   char asym_dist_pat_n[8][256];
@@ -54,7 +56,8 @@ void DrawProjections(const char * numer="zdce",
   for(Int_t pp=0; pp<8; pp++)
   {
     sprintf(asym_dist_pat_n[pp],"asym_dist_pat%d",pp);
-    sprintf(asym_dist_pat_t[pp],"A_{LL} distribution for %s/%s%s",numer,denom,omit_str);
+    //sprintf(asym_dist_pat_t[pp],"Run 12 S_{LL} distribution for %s/%s%s",numer,denom,omit_str);
+    sprintf(asym_dist_pat_t[pp],"Run 12 S_{LL} distribution for rate-safe %s/%s%s",numer,denom,omit_str);
     asym_dist_pat[pp] = new TH1D(asym_dist_pat_n[pp],asym_dist_pat_t[pp],100,-1*WIDTH,WIDTH);
     asym_dist_pat[pp]->SetLineColor(colours[pp]);
   };
