@@ -97,6 +97,7 @@ void BF(const char * var="mul",
   const Int_t NB = 120; // max number of bunches
   Int_t runnum_arr[IMAX];
   Int_t fill_arr[IMAX];
+  Int_t fi_arr[IMAX];
   Int_t index_tmp=0;
   for(Int_t ii=0; ii<matx->GetEntries(); ii++)
   {
@@ -111,6 +112,7 @@ void BF(const char * var="mul",
       };
       runnum_arr[i-1] = runnum;
       fill_arr[i-1] = fill;
+      fi_arr[i-1] = fi;
     };
   };
 
@@ -765,6 +767,49 @@ void BF(const char * var="mul",
       outfile->cd("chi2_profile_2d"); chi2_vs_both[aa]->Write();
     };
   };
+
+
+  // bunch fit results tree
+  TTree * restr  = new TTree();
+  Int_t i_res,fi_res,pattern_res,aa_res;
+  Double_t cons_res,cons_err_res;
+  Double_t epsi_res,epsi_err_res;
+  Double_t asym_res,asym_err_res;
+  restr->Branch("i",&i_res,"i/I");
+  restr->Branch("fi",&fi_res,"fi/I");
+  restr->Branch("aa",&aa_res,"aa/I"); // asymmetry number
+  restr->Branch("pattern",&pattern_res,"pattern/I");
+  restr->Branch("cons",&cons_res,"cons/D");
+  restr->Branch("cons_err",&cons_err_res,"cons_err/D");
+  restr->Branch("epsi",&epsi_res,"epsi/D");
+  restr->Branch("epsi_err",&epsi_err_res,"epsi_err/D");
+  restr->Branch("asym",&asym_res,"asym/D");
+  restr->Branch("asym_err",&asym_err_res,"asym_err/D");
+
+  for(Int_t aa=1; aa<4; aa++) 
+  {
+    for(Int_t bb=1; bb<=IMAX; bb++)
+    {
+      i_res = bb;
+      fi_res = fi_arr[bb-1];
+      pattern_res = pattern_arr[bb-1];
+      aa_res = aa;
+
+      cons_res = cons_dist[aa]->GetBinContent(bb);
+      cons_err_res = cons_dist[aa]->GetBinError(bb);
+      epsi_res = epsi_dist[aa]->GetBinContent(bb);
+      epsi_err_res = epsi_dist[aa]->GetBinError(bb);
+      asym_res = asym_dist[aa]->GetBinContent(bb);
+      asym_err_res = asym_dist[aa]->GetBinError(bb);
+
+      restr->Fill();
+    };
+  };
+
+  outfile->cd();
+  restr->Write("restr");
+
+
   printf("%s created\n",outfile_name);
 }
 
