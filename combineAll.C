@@ -560,6 +560,19 @@ void combineAll(const char * rdatfile="rdat_i.root", const char * sumfile="sums.
     }
     else isConsistent=0;
 
+    ///////////////////////////////////////////////////////////////////
+    //if(pattern!=13) isConsistent=0;
+    //if(pattern!=14) isConsistent=0;
+    //if(pattern!=23) isConsistent=0;
+    //if(pattern!=24) isConsistent=0;
+    //if(pattern!=31) isConsistent=0;
+    //if(pattern!=32) isConsistent=0;
+    //if(pattern!=41) isConsistent=0;
+    //if(pattern!=42) isConsistent=0;
+    //if(pattern!=13 && pattern!=24 && pattern!=31 && pattern!=42) isConsistent=0; // A
+    //if(pattern!=14 && pattern!=23 && pattern!=32 && pattern!=41) isConsistent=0; // B
+    ///////////////////////////////////////////////////////////////////
+
 
     // rdat and sum tree consistency check
     if( (i_rdat != i_sums) ||
