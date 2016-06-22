@@ -2,7 +2,7 @@
 # fetch spin pattern files from cdev using goodruns.dat
 
 # build fill.txt
-awk '{print $1" "$3}' < goodruns.dat > fill.txt
+awk '{print $1" "$2}' < allruns.dat > fill.txt
 
 SPINPAT=spinpat
 FILLFILE=$(pwd)/fill.txt

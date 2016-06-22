@@ -997,7 +997,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   };
   
 
-  // compare zdc and vpd
+  // compare zdc and vpd -- zdc_minus_vpd
   char D_mul_n[3][10][128]; // [cbit] [rellum]
   char D_mul_t[3][10][256];
   TH1D * D_mul_d[3][10];
@@ -1020,6 +1020,39 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     sprintf(D_rsc_t[r],"R%d(zdc) minus R%d(vpd) via rate-safe corrections vs. %s",r,r,var);
     D_rsc_d[r] = new TH1D(D_rsc_n[r],D_rsc_t[r],var_bins,var_l,var_h);
     D_rsc_d[r]->Add(R_rsc_d[1][r],R_rsc_d[2][r],1.0,-1.0);
+  };
+
+
+  // make distributions from zdc_minus_vpd
+  const Double_t DIST_BOUND = 3e-3;
+  char Ddist_mul_n[3][10][128]; // [cbit] [rellum]
+  char Ddist_mul_t[3][10][256];
+  TH1D * Ddist_mul_d[3][10];
+  char Ddist_rsc_n[10][128]; // [rellum]
+  char Ddist_rsc_t[10][256];
+  TH1D * Ddist_rsc_d[10];
+  for(Int_t c=0; c<3; c++)
+  {
+    for(Int_t r=1; r<10; r++)
+    {
+      sprintf(Ddist_mul_n[c][r],"deltadist_mul_zdc%s_vpd%s_%d",cbit[c],cbit[c],r);
+      sprintf(Ddist_mul_t[c][r],"Distribution of R%d(zdc%s) minus R%d(vpd%s) via multiples corrections",r,cbit[c],r,cbit[c]);
+      Ddist_mul_d[c][r] = new TH1D(Ddist_mul_n[c][r],Ddist_mul_t[c][r],200,-1*DIST_BOUND,DIST_BOUND);
+      for(Int_t bb=1; bb<=D_mul_d[c][r]->GetNbinsX(); bb++)
+      {
+        Ddist_mul_d[c][r]->Fill(D_mul_d[c][r]->GetBinContent(bb));
+      };
+    };
+  };
+  for(Int_t r=1; r<10; r++)
+  {
+    sprintf(Ddist_rsc_n[r],"deltadist_rsc_zdc_vpd_%d",r);
+    sprintf(Ddist_rsc_t[r],"Distribution of R%d(zdc) minus R%d(vpd) via rate-safe corrections",r,r);
+    Ddist_rsc_d[r] = new TH1D(Ddist_rsc_n[r],Ddist_rsc_t[r],200,-1*DIST_BOUND,DIST_BOUND);
+    for(Int_t bb=1; bb<D_rsc_d[r]->GetNbinsX(); bb++) 
+    {
+      Ddist_rsc_d[r]->Fill(D_rsc_d[r]->GetBinContent(bb));
+    };
   };
 
 
@@ -1075,11 +1108,17 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
       D_mul_d[c][r]->GetXaxis()->SetLabelSize(FSIZE);
       D_mul_d[c][r]->GetYaxis()->SetLabelSize(FSIZE);
       D_mul_d[c][r]->SetLineWidth(LWIDTH);
+      Ddist_mul_d[c][r]->GetXaxis()->SetLabelSize(FSIZE);
+      Ddist_mul_d[c][r]->GetYaxis()->SetLabelSize(FSIZE);
+      Ddist_mul_d[c][r]->SetLineWidth(LWIDTH);
       if(c==2)
       {
         D_rsc_d[r]->GetXaxis()->SetLabelSize(FSIZE);
         D_rsc_d[r]->GetYaxis()->SetLabelSize(FSIZE);
         D_rsc_d[r]->SetLineWidth(LWIDTH);
+        Ddist_rsc_d[r]->GetXaxis()->SetLabelSize(FSIZE);
+        Ddist_rsc_d[r]->GetYaxis()->SetLabelSize(FSIZE);
+        Ddist_rsc_d[r]->SetLineWidth(LWIDTH);
       };
       for(Int_t t=0; t<3; t++)
       {
@@ -1561,6 +1600,25 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     c_D[r]->cd(4);
     D_rsc_d[r]->Draw();
   };
+  
+
+  TCanvas * c_Ddist[10]; // [rellum]
+  char c_Ddist_n[10][32]; // [rellum] [char buffer]
+  for(Int_t r=1; r<10; r++)
+  {
+    sprintf(c_Ddist_n[r],"c_dist_of_R%d_zdc_minus_vpd",r);
+    c_Ddist[r] = new TCanvas(c_Ddist_n[r],c_Ddist_n[r],1100*sf,940*sf);
+    c_Ddist[r]->Divide(2,2);
+    for(Int_t ccc=1; ccc<=3; ccc++)
+    {
+      c_Ddist[r]->GetPad(ccc)->SetGrid(1,1);
+      c_Ddist[r]->cd(ccc);
+      Ddist_mul_d[ccc-1][r]->Draw();
+    };
+    c_Ddist[r]->GetPad(4)->SetGrid(1,1);
+    c_Ddist[r]->cd(4);
+    Ddist_rsc_d[r]->Draw();
+  };
 
   TCanvas * c_RD[10]; // [rellum]
   char c_RD_n[10][32];
@@ -1792,6 +1850,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     };
     for(Int_t r=1; r<10; r++) c_mean[r]->Write();
     for(Int_t r=1; r<10; r++) c_D[r]->Write();
+    for(Int_t r=1; r<10; r++) c_Ddist[r]->Write();
     for(Int_t r=1; r<10; r++) 
     {
       for(Int_t x=0; x<3; x++)

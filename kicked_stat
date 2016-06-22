@@ -1,7 +1,17 @@
+fill 16567
+manually kicked 16567 56 -1 -1
+25 26 24 26 2 24
+    1 2 0 2
 fill 16570
 manually kicked 16570 22 1 1
 26 24 26 25 1 24
     2 0 2 1
+fill 16575
+3 0 0 3 1 0
+    3 0 0 3
+fill 16576
+26 26 24 26 2 24
+    2 2 0 2
 fill 16582
 manually kicked 16582 61 1 -1
 23 25 25 26 0 23
@@ -59,6 +69,10 @@ fill 16627
 fill 16632
 25 24 24 25 1 24
     1 0 0 1
+fill 16633
+manually kicked 16633 104 1 1
+24 25 25 23 3 23
+    1 2 2 0
 fill 16643
 24 25 25 24 0 24
     0 1 1 0
@@ -144,6 +158,8 @@ fill 16710
 26 26 26 24 3 24
     2 2 2 0
 fill 16716
+manually kicked 16716 78 0 0
+manually kicked 16716 79 0 0
 23 25 26 26 0 23
     0 2 3 3
 fill 16717
@@ -169,6 +185,8 @@ fill 16726
 26 25 26 25 1 25
     1 0 1 0
 fill 16727
+manually kicked 16727 78 0 0
+manually kicked 16727 79 0 0
 23 25 26 26 0 23
     0 2 3 3
 fill 16730

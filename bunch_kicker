@@ -18,6 +18,7 @@ run_randomizer=0
 
 # manually removed bunches
 > kicked_manual
+echo 16567 56 >> kicked_manual
 echo 16570 22 >> kicked_manual
 echo 16582 61 >> kicked_manual
 echo 16587 29 >> kicked_manual
@@ -28,6 +29,7 @@ echo 16618 40 >> kicked_manual
 echo 16625 23 >> kicked_manual
 echo 16626 12 >> kicked_manual
 echo 16626 19 >> kicked_manual
+echo 16633 104 >> kicked_manual
 echo 16650 58 >> kicked_manual
 echo 16655 75 >> kicked_manual
 echo 16656 15 >> kicked_manual
@@ -43,7 +45,11 @@ echo 16701 28 >> kicked_manual
 echo 16704 90 >> kicked_manual
 echo 16704 101 >> kicked_manual
 echo 16705 51 >> kicked_manual
+echo 16716 78 >> kicked_manual
+echo 16716 79 >> kicked_manual
 echo 16720 7 >> kicked_manual
+echo 16727 78 >> kicked_manual
+echo 16727 79 >> kicked_manual
 echo 16731 60 >> kicked_manual
 
 > kicked

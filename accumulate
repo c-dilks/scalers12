@@ -9,9 +9,9 @@ f="acc.dat"
 touch $dir/a.tmp
 rm $dir/*.tmp
 
-# build fill_time.txt from goodruns.dat
+# build fill_time.txt from allruns.dat
 echo "building fill_time.txt..."
-awk '{print $1" "$3" "$4}' < goodruns.dat > fill_time.txt
+awk '{print $1" "$2" "$3}' < allruns.dat > fill_time.txt
 
 
 

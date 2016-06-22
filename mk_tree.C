@@ -164,7 +164,8 @@ void mk_tree(const char * acc_file="datfiles/acc.dat")
     
 
     // store data into arrays, implementing bXing shift corrections on scalers
-    if(fill==16570)
+    if(fill==16570 ||
+       fill==16567)
     {
       bbce_arr[index-1][(bx+113)%120] = bbce; // shift down 7 bXings
       bbcw_arr[index-1][(bx+113)%120] = bbcw;
@@ -226,6 +227,7 @@ void mk_tree(const char * acc_file="datfiles/acc.dat")
     runnum = runnum_arr[i];
     fill_index = fi_arr[i];
     fill = fill_arr[i];
+
     time = time_arr[i];
     for(Int_t b=0; b<120; b++)
     {
