@@ -8,11 +8,11 @@
 //
 //  - if Nomit = -1 (default value), then it just reads the files from ./
 
-void DrawProjections(const char * numer="zdce",
-                     const char * denom="vpdx",
+void DrawProjections(const char * numer="vpdx",
+                     const char * denom="zdcx",
                      Int_t Nomit=-1)
 {
-  const Float_t WIDTH = 0.9e-3;
+  const Float_t WIDTH = 1e-3;
   gStyle->SetOptFit(1);
   char filename[256];
   if(Nomit==-1)
@@ -49,6 +49,7 @@ void DrawProjections(const char * numer="zdce",
   //sprintf(asym_dist_all_t,"Run 12 S_{LL} distribution for %s/%s%s",numer,denom,omit_str);
   sprintf(asym_dist_all_t,"Run 12 S_{LL} distribution for rate-safe %s/%s%s",numer,denom,omit_str);
   TH1D * asym_dist_all = new TH1D(asym_dist_all_n,asym_dist_all_t,100,-1*WIDTH,WIDTH);
+  asym_dist_all->SetLineWidth(3);
 
   char asym_dist_pat_n[8][256];
   char asym_dist_pat_t[8][256];
@@ -80,14 +81,22 @@ void DrawProjections(const char * numer="zdce",
     };
   };
 
-  asym_dist_all->Fit("gaus","","",-1*WIDTH,WIDTH);
+  TF1 * onegaus = 
+    new TF1("onegaus","[0]*exp(-0.5*((x-[1])/[2])^2)");
+  onegaus->SetParameter(0,80); // normalisation
+  onegaus->SetParameter(1,0); // mean
+  onegaus->SetParameter(2,0.0005); // sigma
+
+  onegaus->SetParNames("N","#mu","#sigma");
+
+  asym_dist_all->Fit(onegaus,"","",-1*WIDTH,WIDTH);
   c1->Close();
 
 
   TCanvas * cc = new TCanvas("cc","cc",1200,600);
   cc->SetGrid(1,0);
   gStyle->SetOptStat(1100);
-  gStyle->SetStatFontSize(0.1);
+  //gStyle->SetStatFontSize(0.1);
   Float_t size = 0.05;
   asym_dist_all->GetXaxis()->SetLabelSize(size);
   asym_dist_all->GetYaxis()->SetLabelSize(size);
@@ -100,10 +109,12 @@ void DrawProjections(const char * numer="zdce",
   };
   asym_dist_all->Draw("same");
 
+  /*
   Double_t sigma = asym_dist_all->GetFunction("gaus")->GetParameter(2);
   Double_t mean = asym_dist_all->GetMean();
   Double_t sys = sigma + fabs(mean);
   printf("sigma = %f\nmean = %f\nsystematic = %f\n",sigma,mean,sys);
+  */
 
   char printname[64];
   if(Nomit==-1) strcpy(printname,"projection.png");

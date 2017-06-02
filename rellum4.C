@@ -1055,6 +1055,17 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
     };
   };
 
+  // fit Ddists
+  for(Int_t r=1; r<10; r++)
+  {
+    Ddist_rsc_d[r]->Fit("gaus","Q","",-1*DIST_BOUND,DIST_BOUND);
+    for(Int_t c=0; c<3; c++)
+    {
+      Ddist_mul_d[c][r]->Fit("gaus","Q","",-1*DIST_BOUND,DIST_BOUND);
+    };
+  };
+
+
 
 
   // compare singles bit combinations (east minus west, east minus coin, west minus coin)
