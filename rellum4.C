@@ -1226,7 +1226,7 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   Double_t zzz;
   Double_t zz1,zz2,zz3;
   Double_t maxx,maxx_tmp;
-  Int_t ncbins=250;
+  Int_t ncbins=100;
   if(!strcmp(var,"i"))
   {
     for(Int_t t=0; t<3; t++)
@@ -1308,12 +1308,12 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
         // fill mul_compare_raw -- (mul - raw) / mul vs. (mul/Nbx)
         if(c==2)
         {
-          for(Int_t s=0; s<4; s++)
+          for(Int_t s=0; s<5; s++)
           {
             sprintf(mul_compare_raw_n[t][s],"mul_compare_raw_%s_s%d",tbit[t],s);
             sprintf(mul_compare_raw_t[t][s],
-              "(N_{%sx}^{mul} - N_{%sx}^{raw}) / N_{%sx}^{mul} vs. N_{%sx}^{mul}/N_{bx} -- %s",
-              tbit[t],tbit[t],tbit[t],tbit[t],leg);
+              "(N_{%sx}^{mul} - N_{%sx}^{raw}) / N_{%sx}^{mul} vs. N_{%sx}^{mul}/N_{bx}",
+              tbit[t],tbit[t],tbit[t],tbit[t]);
 
             maxx=0;
             for(Int_t b=1; b<var_bins; b++)
@@ -1341,12 +1341,12 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
         // fill rsc_compare_raw -- (Omega*rsc - raw) / (Omega*rsc) vs. (Omega*rsc/Nbx)
         if(c==2)
         {
-          for(Int_t s=0; s<4; s++)
+          for(Int_t s=0; s<5; s++)
           {
             sprintf(rsc_compare_raw_n[t][s],"rsc_compare_raw_%s_s%d",tbit[t],s);
             sprintf(rsc_compare_raw_t[t][s],
-              "(#Omega*N_{%s}^{rsc} - N_{%sx}^{raw})/(#Omega*N_{%s}^{rsc}) vs. #Omega*N_{%s}^{rsc}/N_{bx} -- %s",
-              tbit[t],tbit[t],tbit[t],tbit[t],leg);
+              "(#Omega*N_{%s}^{rsc} - N_{%sx}^{raw})/(#Omega*N_{%s}^{rsc}) vs. #Omega*N_{%s}^{rsc}/N_{bx}",
+              tbit[t],tbit[t],tbit[t],tbit[t]);
 
             maxx=0;
             for(Int_t b=1; b<var_bins; b++)
@@ -1374,12 +1374,12 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
         // fill rsc_compare_mul -- (Omega*rsc - mul) / (Omega*rsc) vs. (Omega*rsc/Nbx)
         if(c==2)
         {
-          for(Int_t s=0; s<4; s++)
+          for(Int_t s=0; s<5; s++)
           {
             sprintf(rsc_compare_mul_n[t][s],"rsc_compare_mul_%s_s%d",tbit[t],s);
             sprintf(rsc_compare_mul_t[t][s],
-              "(#Omega*N_{%s}^{rsc} - N_{%sx}^{mul})/(#Omega*N_{%s}^{rsc}) vs. #Omega*N_{%s}^{rsc}/N_{bx} -- %s",
-              tbit[t],tbit[t],tbit[t],tbit[t],leg);
+              "(#Omega*N_{%s}^{rsc} - N_{%sx}^{mul})/(#Omega*N_{%s}^{rsc}) vs. #Omega*N_{%s}^{rsc}/N_{bx}",
+              tbit[t],tbit[t],tbit[t],tbit[t]);
 
             maxx=0;
             for(Int_t b=1; b<var_bins; b++)
@@ -1748,96 +1748,69 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   };
 
   TCanvas * c_mul_compare_raw = new TCanvas("c_mul_compare_raw","c_mul_compare_raw",800*sf,800*sf);
+  Bool_t includeBBC = false;
+  Int_t pad;
   if(!strcmp(var,"i"))
   {
-    c_mul_compare_raw->Divide(2,2);
+    c_mul_compare_raw->Divide(2,includeBBC?2:1);
     for(Int_t t=0; t<3; t++) 
     {
-      c_mul_compare_raw->GetPad(t+1)->SetGrid(1,1);
-      mul_compare_raw_pfx[t][0]->SetLineColor(kGreen+2);
-      mul_compare_raw_pfx[t][1]->SetLineColor(kOrange+7);
-      mul_compare_raw_pfx[t][2]->SetLineColor(kRed);
-      mul_compare_raw_pfx[t][3]->SetLineColor(kBlue);
-      c_mul_compare_raw->cd(t+1);
-      mul_compare_raw_pfx[t][0]->Draw();
-      for(Int_t s=1; s<4; s++) mul_compare_raw_pfx[t][s]->Draw("same");
+      if(t>0 || includeBBC) {
+        pad = includeBBC ? t+1 : t;
+        c_mul_compare_raw->GetPad(pad)->SetGrid(1,1);
+        mul_compare_raw_pfx[t][0]->SetLineColor(kGreen+2);
+        mul_compare_raw_pfx[t][1]->SetLineColor(kOrange+7);
+        mul_compare_raw_pfx[t][2]->SetLineColor(kRed);
+        mul_compare_raw_pfx[t][3]->SetLineColor(kBlue);
+        c_mul_compare_raw->cd(pad);
+        mul_compare_raw_pfx[t][0]->Draw();
+        //for(Int_t s=1; s<4; s++) mul_compare_raw_pfx[t][s]->Draw("same");
+        mul_compare_raw[t][4]->Draw("COLZ");
+      };
     };
   };
   
   TCanvas * c_rsc_compare_raw = new TCanvas("c_rsc_compare_raw","c_rsc_compare_raw",800*sf,800*sf);
   if(!strcmp(var,"i"))
   {
-    c_rsc_compare_raw->Divide(2,2);
+    c_rsc_compare_raw->Divide(2,includeBBC?2:1);
     for(Int_t t=0; t<3; t++) 
     {
-      c_rsc_compare_raw->GetPad(t+1)->SetGrid(1,1);
-      rsc_compare_raw_pfx[t][0]->SetLineColor(kGreen+2);
-      rsc_compare_raw_pfx[t][1]->SetLineColor(kOrange+7);
-      rsc_compare_raw_pfx[t][2]->SetLineColor(kRed);
-      rsc_compare_raw_pfx[t][3]->SetLineColor(kBlue);
-      c_rsc_compare_raw->cd(t+1);
-      rsc_compare_raw_pfx[t][0]->Draw();
-      for(Int_t s=1; s<4; s++) rsc_compare_raw_pfx[t][s]->Draw("same");
+      if(t>0 || includeBBC) {
+        pad = includeBBC ? t+1 : t;
+        c_rsc_compare_raw->GetPad(pad)->SetGrid(1,1);
+        rsc_compare_raw_pfx[t][0]->SetLineColor(kGreen+2);
+        rsc_compare_raw_pfx[t][1]->SetLineColor(kOrange+7);
+        rsc_compare_raw_pfx[t][2]->SetLineColor(kRed);
+        rsc_compare_raw_pfx[t][3]->SetLineColor(kBlue);
+        c_rsc_compare_raw->cd(pad);
+        rsc_compare_raw_pfx[t][0]->Draw();
+        //for(Int_t s=1; s<4; s++) rsc_compare_raw_pfx[t][s]->Draw("same");
+        rsc_compare_raw[t][4]->Draw("COLZ");
+      };
     };
   };
 
   TCanvas * c_rsc_compare_mul = new TCanvas("c_rsc_compare_mul","c_rsc_compare_mul",800*sf,800*sf);
   if(!strcmp(var,"i"))
   {
-    c_rsc_compare_mul->Divide(2,2);
+    c_rsc_compare_mul->Divide(2,includeBBC?2:1);
     for(Int_t t=0; t<3; t++) 
     {
-      c_rsc_compare_mul->GetPad(t+1)->SetGrid(1,1);
-      rsc_compare_mul_pfx[t][0]->SetLineColor(kGreen+2);
-      rsc_compare_mul_pfx[t][1]->SetLineColor(kOrange+7);
-      rsc_compare_mul_pfx[t][2]->SetLineColor(kRed);
-      rsc_compare_mul_pfx[t][3]->SetLineColor(kBlue);
-      c_rsc_compare_mul->cd(t+1);
-      rsc_compare_mul_pfx[t][0]->Draw();
-      for(Int_t s=1; s<4; s++) rsc_compare_mul_pfx[t][s]->Draw("same");
+      if(t>0 || includeBBC) {
+        pad = includeBBC ? t+1 : t;
+        c_rsc_compare_mul->GetPad(pad)->SetGrid(1,1);
+        rsc_compare_mul_pfx[t][0]->SetLineColor(kGreen+2);
+        rsc_compare_mul_pfx[t][1]->SetLineColor(kOrange+7);
+        rsc_compare_mul_pfx[t][2]->SetLineColor(kRed);
+        rsc_compare_mul_pfx[t][3]->SetLineColor(kBlue);
+        c_rsc_compare_mul->cd(pad);
+        rsc_compare_mul_pfx[t][0]->Draw();
+        //for(Int_t s=1; s<4; s++) rsc_compare_mul_pfx[t][s]->Draw("same");
+        rsc_compare_mul[t][4]->Draw("COLZ");
+      };
     };
   };
-
-
-
-  /*
-  // draw only ZDC and VPD for these plots (for FMS meeting 11.10.14) 
-  //
-  TCanvas * c_mul_compare_raw = new TCanvas("c_mul_compare_raw","c_mul_compare_raw",800*sf,400*sf);
-  if(!strcmp(var,"i"))
-  {
-    c_mul_compare_raw->Divide(2,1);
-    for(Int_t t=1; t<3; t++) 
-    {
-      c_mul_compare_raw->GetPad(t)->SetGrid(1,1);
-      mul_compare_raw_pfx[t][0]->SetLineColor(kGreen+2);
-      mul_compare_raw_pfx[t][1]->SetLineColor(kOrange+7);
-      mul_compare_raw_pfx[t][2]->SetLineColor(kRed);
-      mul_compare_raw_pfx[t][3]->SetLineColor(kBlue);
-      c_mul_compare_raw->cd(t);
-      mul_compare_raw_pfx[t][0]->Draw();
-      for(Int_t s=1; s<4; s++) mul_compare_raw_pfx[t][s]->Draw("same");
-    };
-  };
-  
-  TCanvas * c_rsc_compare_raw = new TCanvas("c_rsc_compare_raw","c_rsc_compare_raw",800*sf,400*sf);
-  if(!strcmp(var,"i"))
-  {
-    c_rsc_compare_raw->Divide(2,1);
-    for(Int_t t=1; t<3; t++) 
-    {
-      c_rsc_compare_raw->GetPad(t)->SetGrid(1,1);
-      rsc_compare_raw_pfx[t][0]->SetLineColor(kGreen+2);
-      rsc_compare_raw_pfx[t][1]->SetLineColor(kOrange+7);
-      rsc_compare_raw_pfx[t][2]->SetLineColor(kRed);
-      rsc_compare_raw_pfx[t][3]->SetLineColor(kBlue);
-      c_rsc_compare_raw->cd(t);
-      rsc_compare_raw_pfx[t][0]->Draw();
-      for(Int_t s=1; s<4; s++) rsc_compare_raw_pfx[t][s]->Draw("same");
-    };
-  };
-  */
-
 
 
 

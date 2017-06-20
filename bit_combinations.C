@@ -50,6 +50,15 @@ void bit_combinations(const char * filename="counts.root")
   TH1F * ntot_vs_bits_bbc = new TH1F();
   TH1F * ntot_vs_bits_zdc = new TH1F();
   TH1F * ntot_vs_bits_vpd = new TH1F();
+  ntot_vs_bits_bbc->GetXaxis()->SetLabelSize(0.1);
+  ntot_vs_bits_zdc->GetXaxis()->SetLabelSize(0.1);
+  ntot_vs_bits_vpd->GetXaxis()->SetLabelSize(0.1);
+  ntot_vs_bits_bbc->GetYaxis()->SetLabelSize(0.06);
+  ntot_vs_bits_zdc->GetYaxis()->SetLabelSize(0.06);
+  ntot_vs_bits_vpd->GetYaxis()->SetLabelSize(0.06);
+  ntot_vs_bits_bbc->GetXaxis()->SetLabelOffset(0.01);
+  ntot_vs_bits_zdc->GetXaxis()->SetLabelOffset(0.01);
+  ntot_vs_bits_vpd->GetXaxis()->SetLabelOffset(0.01);
 
 
   // scaler bit combination names
@@ -77,9 +86,9 @@ void bit_combinations(const char * filename="counts.root")
   };
 
   ntot_vs_bits_bbc->SetStats(0);
-  ntot_vs_bits_bbc->SetTitle("total bbc counts vs. scaler bits");
+  ntot_vs_bits_bbc->SetTitle("total BBC counts for each scaler bit");
   ntot_vs_bits_bbc->SetBarWidth(0.4);
-  ntot_vs_bits_bbc->SetBarOffset(0.55);
+  ntot_vs_bits_bbc->SetBarOffset(0.3);
   ntot_vs_bits_bbc->SetFillColor(50);
   TCanvas * c_bbc_bits = new TCanvas("c_bbc_bits","c_bbc_bits",700,500);
   c_bbc_bits->SetGrid(0,1);
@@ -87,9 +96,9 @@ void bit_combinations(const char * filename="counts.root")
   ntot_vs_bits_bbc->Draw("bar2");
 
   ntot_vs_bits_zdc->SetStats(0);
-  ntot_vs_bits_zdc->SetTitle("total zdc counts vs. scaler bits");
+  ntot_vs_bits_zdc->SetTitle("total ZDC counts for each scaler bit");
   ntot_vs_bits_zdc->SetBarWidth(0.4);
-  ntot_vs_bits_zdc->SetBarOffset(0.55);
+  ntot_vs_bits_zdc->SetBarOffset(0.3);
   ntot_vs_bits_zdc->SetFillColor(50);
   TCanvas * c_zdc_bits = new TCanvas("c_zdc_bits","c_zdc_bits",700,500);
   c_zdc_bits->SetGrid(0,1);
@@ -97,9 +106,9 @@ void bit_combinations(const char * filename="counts.root")
   ntot_vs_bits_zdc->Draw("bar2");
 
   ntot_vs_bits_vpd->SetStats(0);
-  ntot_vs_bits_vpd->SetTitle("total vpd counts vs. scaler bits");
+  ntot_vs_bits_vpd->SetTitle("total VPD counts for each scaler bit");
   ntot_vs_bits_vpd->SetBarWidth(0.4);
-  ntot_vs_bits_vpd->SetBarOffset(0.55);
+  ntot_vs_bits_vpd->SetBarOffset(0.3);
   ntot_vs_bits_vpd->SetFillColor(50);
   TCanvas * c_vpd_bits = new TCanvas("c_vpd_bits","c_vpd_bits",700,500);
   c_vpd_bits->SetGrid(0,1);
@@ -111,12 +120,12 @@ void bit_combinations(const char * filename="counts.root")
   char zdc_outfile[64];
   char vpd_outfile[64];
   strcpy(outdir,"bit_combos");
-  sprintf(bbc_outfile,"%s/bbc_bit_combos.png",outdir);
-  sprintf(zdc_outfile,"%s/zdc_bit_combos.png",outdir);
-  sprintf(vpd_outfile,"%s/vpd_bit_combos.png",outdir);
-  c_bbc_bits->Print(bbc_outfile,"png");
-  c_zdc_bits->Print(zdc_outfile,"png");
-  c_vpd_bits->Print(vpd_outfile,"png");
+  sprintf(bbc_outfile,"%s/bbc_bit_combos.pdf",outdir);
+  sprintf(zdc_outfile,"%s/zdc_bit_combos.pdf",outdir);
+  sprintf(vpd_outfile,"%s/vpd_bit_combos.pdf",outdir);
+  c_bbc_bits->Print(bbc_outfile,"pdf");
+  c_zdc_bits->Print(zdc_outfile,"pdf");
+  c_vpd_bits->Print(vpd_outfile,"pdf");
   printf("%s created\n",bbc_outfile);
   printf("%s created\n",zdc_outfile);
   printf("%s created\n",vpd_outfile);
