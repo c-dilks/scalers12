@@ -80,9 +80,11 @@ for file in $(ls spinpat/*.spin); do
     grep_result=$(grep -w "$fill $bx" kicked_manual)
 
     ##### REMOVE bxings 78 and 79, which appear to be anomalous
-    if [ $bx -eq 78 -o $bx -eq 79 ]; then
-      grep_result="$fill $bx"
-    fi
+    ## no need, because they are enhanced since they don't
+    ## collide in PHENIX (see log 08.24.17)
+    #if [ $bx -eq 78 -o $bx -eq 79 ]; then
+      #grep_result="$fill $bx"
+    #fi
     
     spinbit=-1
     if [ $blue -eq -1 -a $yell -eq -1 ]; then spinbit=0;
