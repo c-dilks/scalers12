@@ -1058,10 +1058,10 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
   // fit Ddists
   for(Int_t r=1; r<10; r++)
   {
-    Ddist_rsc_d[r]->Fit("gaus","Q","",-1*DIST_BOUND,DIST_BOUND);
+    Ddist_rsc_d[r]->Fit("gaus","Q","",-0.0003,0.0003);
     for(Int_t c=0; c<3; c++)
     {
-      Ddist_mul_d[c][r]->Fit("gaus","Q","",-1*DIST_BOUND,DIST_BOUND);
+      Ddist_mul_d[c][r]->Fit("gaus","Q","",-0.0003,0.0003);
     };
   };
 
@@ -1615,20 +1615,33 @@ void rellum4(const char * var="i",Bool_t printPNGs=0,
 
   TCanvas * c_Ddist[10]; // [rellum]
   char c_Ddist_n[10][32]; // [rellum] [char buffer]
+  Bool_t thesis = false; // if true, only draw RSC (for my thesis)
+  TString axistitle;
   for(Int_t r=1; r<10; r++)
   {
     sprintf(c_Ddist_n[r],"c_dist_of_R%d_zdc_minus_vpd",r);
     c_Ddist[r] = new TCanvas(c_Ddist_n[r],c_Ddist_n[r],1100*sf,940*sf);
-    c_Ddist[r]->Divide(2,2);
-    for(Int_t ccc=1; ccc<=3; ccc++)
-    {
-      c_Ddist[r]->GetPad(ccc)->SetGrid(1,1);
-      c_Ddist[r]->cd(ccc);
-      Ddist_mul_d[ccc-1][r]->Draw();
+    if(!thesis) {
+      c_Ddist[r]->Divide(2,2);
+      for(Int_t ccc=1; ccc<=3; ccc++)
+      {
+        c_Ddist[r]->GetPad(ccc)->SetGrid(1,1);
+        c_Ddist[r]->cd(ccc);
+        Ddist_mul_d[ccc-1][r]->Draw();
+      };
+      c_Ddist[r]->GetPad(4)->SetGrid(1,1);
+      c_Ddist[r]->cd(4);
+      Ddist_rsc_d[r]->Draw();
+    } else {
+      c_Ddist[r]->SetGrid(1,1);
+      axistitle = Form("R_{%d}^{ZDC}-R_{%d}^{VPD}",r,r);
+      Ddist_rsc_d[r]->GetXaxis()->SetTitle(axistitle.Data());
+      Ddist_rsc_d[r]->GetXaxis()->SetTitleSize(0.06);
+      Ddist_rsc_d[r]->GetXaxis()->SetTitleOffset(1.4);
+      gStyle->SetFitFormat(".3g");
+      gStyle->SetStatFormat(".3g");
+      Ddist_rsc_d[r]->Draw();
     };
-    c_Ddist[r]->GetPad(4)->SetGrid(1,1);
-    c_Ddist[r]->cd(4);
-    Ddist_rsc_d[r]->Draw();
   };
 
   TCanvas * c_RD[10]; // [rellum]
